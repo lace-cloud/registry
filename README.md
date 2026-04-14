@@ -62,7 +62,7 @@ modules/aws/cloudwatch/log_group/
 module:
   id: aws/service/module-name            # Required: unique registry ID
   name: module-name                      # Required: kebab-case name
-  system: aws                            # Required: aws | gcp | azure
+  system: aws                            # Required: aws | google | azure
   version: 1.0.0                         # Required: semantic version
   description: "What this module does"   # Required
 
