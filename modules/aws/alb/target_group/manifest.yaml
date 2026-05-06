@@ -1,0 +1,41 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: alb-target-group
+version: v1.0.0
+displayName: "AWS ALB Target Group"
+description: "AWS ALB target group with health check configuration for Fargate (IP target type)"
+categories: [networking, load-balancing, alb]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/alb/target_group
+  example: |
+    module "target_group" {
+      source = "git::https://github.com/lace-cloud/registry.git//modules/aws/alb/target_group?ref=v1.0.0"
+
+      name        = "my-tg"
+      port        = 80
+      protocol    = "HTTP"
+      vpc_id      = "vpc-123456"
+      target_type = "ip"
+
+      health_check = {
+        path                = "/health"
+        port                = "traffic-port"
+        healthy_threshold   = 3
+        unhealthy_threshold = 3
+        timeout             = 5
+        interval            = 30
+        matcher             = "200"
+      }
+
+      tags = {
+        Environment = "production"
+      }
+    }

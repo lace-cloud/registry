@@ -1,0 +1,36 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: ec2-security-group
+version: v1.0.0
+displayName: "AWS EC2 Security Group"
+description: "AWS EC2 Security Group with configurable ingress and egress rules"
+categories: [networking, security, ec2]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/ec2/security_group
+  example: |
+    module "sg" {
+      source      = "git::https://github.com/lace-cloud/registry.git//modules/aws/ec2/security_group?ref=v1.0.0"
+      name        = "web-server-sg"
+      description = "Security group for web servers"
+      vpc_id      = "vpc-123456"
+      ingress_rules = [
+        {
+          from_port   = 443
+          to_port     = 443
+          protocol    = "tcp"
+          cidr_blocks = ["0.0.0.0/0"]
+          description = "HTTPS"
+        }
+      ]
+      tags = {
+        Environment = "production"
+      }
+    }

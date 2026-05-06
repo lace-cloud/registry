@@ -1,0 +1,39 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: ecs-cluster
+version: v1.0.0
+displayName: "AWS ECS Cluster"
+description: "AWS ECS cluster with Container Insights and capacity provider configuration"
+categories: [compute, containers, ecs]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/ecs/cluster
+  example: |
+    module "ecs_cluster" {
+      source = "git::https://github.com/lace-cloud/registry.git//modules/aws/ecs/cluster?ref=v1.0.0"
+
+      name = "my-cluster"
+
+      container_insights = true
+
+      capacity_providers = ["FARGATE", "FARGATE_SPOT"]
+
+      default_capacity_provider_strategy = [
+        {
+          capacity_provider = "FARGATE"
+          weight            = 1
+          base              = 1
+        }
+      ]
+
+      tags = {
+        Environment = "production"
+      }
+    }

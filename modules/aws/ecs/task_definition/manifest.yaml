@@ -1,0 +1,45 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: ecs-task-definition
+version: v1.0.0
+displayName: "AWS ECS Task Definition"
+description: "AWS ECS task definition for Fargate with container definitions, CPU/memory, and IAM roles"
+categories: [compute, containers, ecs]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/ecs/task_definition
+  example: |
+    module "task_definition" {
+      source = "git::https://github.com/lace-cloud/registry.git//modules/aws/ecs/task_definition?ref=v1.0.0"
+
+      family             = "my-app"
+      cpu                = 256
+      memory             = 512
+      execution_role_arn = "arn:aws:iam::123456789012:role/ecsTaskExecutionRole"
+      task_role_arn      = "arn:aws:iam::123456789012:role/ecsTaskRole"
+
+      container_definitions = jsonencode([
+        {
+          name      = "app"
+          image     = "nginx:latest"
+          essential = true
+          portMappings = [
+            {
+              containerPort = 80
+              protocol      = "tcp"
+            }
+          ]
+        }
+      ])
+
+      tags = {
+        Environment = "production"
+      }
+    }

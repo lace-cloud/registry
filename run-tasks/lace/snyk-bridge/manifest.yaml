@@ -1,0 +1,48 @@
+apiVersion: '1'
+axis: run_task
+author: lace
+name: snyk-bridge
+version: v1.0.0
+displayName: "Snyk SAST Bridge"
+description: "Reads plan-diff for Snyk-relevant resources, queries Snyk REST API for findings, and produces a passed/failed verdict gated on severity threshold."
+categories: [security, sast, gating]
+configSchema:
+  type: object
+  required: [snykOrgId]
+  properties:
+    snykOrgId:
+      type: string
+      description: "Your Snyk organization ID."
+    severityThreshold:
+      type: string
+      enum: [low, medium, high, critical]
+      default: high
+      description: "Block findings at this severity or above."
+    ignoreRules:
+      type: array
+      items: { type: string }
+      default: []
+      description: "Snyk issue IDs to filter out before threshold check."
+    projectIds:
+      type: array
+      items: { type: string }
+      default: []
+      description: "Explicit Snyk project IDs to query. When empty, the handler walks the plan diff's snykProjectRefs annotation."
+    apiHost:
+      type: string
+      format: uri
+      default: "https://api.snyk.io"
+      description: "Override default Snyk REST host."
+  additionalProperties: false
+runtime:
+  location: lace-managed
+  handlerId: lace/snyk-bridge
+endpointSource: in_tree
+verdictMode: sync
+timeoutSeconds: 30
+signing:
+  kind: none
+hooks:
+  available: [post_plan, pre_apply]
+  default: [post_plan]
+authors: ["Lace Team <team@lace.cloud>"]

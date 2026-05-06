@@ -1,0 +1,38 @@
+apiVersion: '1'
+axis: run_task
+author: lace
+name: datadog-notifier
+version: v1.0.0
+displayName: "Datadog Run Notifier"
+description: "Posts a Datadog event with run summary (kind, status, plan-diff counts, stack) after each Run completes. Always advisory — never blocks Runs."
+categories: [observability, notification]
+configSchema:
+  type: object
+  properties:
+    site:
+      type: string
+      enum: [us1, us3, us5, eu1, us1-fed]
+      default: us1
+      description: "Datadog site / region. Maps to the API host the handler POSTs to."
+    tags:
+      type: array
+      items: { type: string }
+      default: []
+      description: "Static tags appended to every event (e.g. team:platform, service:lace)."
+    alertOnFailure:
+      type: boolean
+      default: true
+      description: "When true, post-apply Runs that terminate as apply_failed produce events at alert_type=error."
+  additionalProperties: false
+runtime:
+  location: lace-managed
+  handlerId: lace/datadog-notifier
+endpointSource: in_tree
+verdictMode: sync
+timeoutSeconds: 10
+signing:
+  kind: none
+hooks:
+  available: [post_apply, post_destroy]
+  default: [post_apply]
+authors: ["Lace Team <team@lace.cloud>"]

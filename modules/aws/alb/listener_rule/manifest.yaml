@@ -1,0 +1,31 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: alb-listener-rule
+version: v1.0.0
+displayName: "AWS ALB Listener Rule"
+description: "AWS ALB listener rule with host/path conditions and forward, redirect, or fixed-response actions"
+categories: [networking, load-balancing, alb]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/alb/listener_rule
+  example: |
+    module "listener_rule" {
+      source = "git::https://github.com/lace-cloud/registry.git//modules/aws/alb/listener_rule?ref=v1.0.0"
+
+      listener_arn     = module.listener.arn
+      priority         = 100
+      path_patterns    = ["/api/*"]
+      action_type      = "forward"
+      target_group_arn = module.target_group.arn
+
+      tags = {
+        Environment = "production"
+      }
+    }

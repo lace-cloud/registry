@@ -3,11 +3,15 @@ name: Publish
 on:
   push:
     branches: [main]
-    paths: ['modules/**']
+    paths:
+      - 'modules/**'
+      - 'scanners/**'
+      - 'run-tasks/**'
+      - 'chaos-providers/**'
   workflow_dispatch:
     inputs:
-      module_path:
-        description: 'Module path (e.g., modules/aws/iam/role)'
+      manifest_dir:
+        description: 'Manifest dir (e.g., scanners/lace/aws-drift)'
         required: true
         type: string
 
@@ -40,12 +44,10 @@ jobs:
           STATUS=$(gh api \
             "orgs/${{ github.repository_owner }}/teams/platform-team/memberships/${{ github.actor }}" \
             --jq '.state' 2>/dev/null || echo "not_found")
-
           if [ "$STATUS" != "active" ]; then
-            echo "::error::@${{ github.actor }} is not a member of @${{ github.repository_owner }}/platform-team. Manual dispatch is restricted to platform team members."
+            echo "::error::@${{ github.actor }} is not a member of @${{ github.repository_owner }}/platform-team. Manual dispatch is restricted to platform-team members."
             exit 1
           fi
-
           echo "Authorized: @${{ github.actor }} is an active platform-team member"
 
   prepare:
@@ -55,97 +57,76 @@ jobs:
     if: always() && (needs.authorize.result == 'success' || needs.authorize.result == 'skipped')
 
     outputs:
-      modules_json: ${{ steps.resolve.outputs.modules_json }}
-      modules_found: ${{ steps.resolve.outputs.modules_found }}
+      manifests_json: ${{ steps.resolve.outputs.manifests_json }}
+      manifests_found: ${{ steps.resolve.outputs.manifests_found }}
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
-      - name: Resolve modules
+      - name: Resolve manifests
         id: resolve
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            MODULE="${{ inputs.module_path }}"
-            if [ ! -d "$MODULE" ]; then
-              echo "::error::Directory not found: $MODULE"
-              exit 1
-            fi
-            if [ ! -f "$MODULE/module.yaml" ]; then
-              echo "::error::module.yaml missing in $MODULE"
-              exit 1
-            fi
-            echo "Manual trigger: $MODULE"
-            echo "modules_json=[\"$MODULE\"]" >> $GITHUB_OUTPUT
-            echo "modules_found=true" >> $GITHUB_OUTPUT
+            DIR="${{ inputs.manifest_dir }}"
+            [ -d "$DIR" ]               || { echo "::error::Directory not found: $DIR"; exit 1; }
+            [ -f "$DIR/manifest.yaml" ] || { echo "::error::manifest.yaml missing in $DIR"; exit 1; }
+            echo "Manual trigger: $DIR"
+            echo "manifests_json=[\"$DIR\"]" >> $GITHUB_OUTPUT
+            echo "manifests_found=true" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          # Push event — detect changed modules
-          changed=$(git diff --name-only --diff-filter=AM HEAD^ HEAD | grep '^modules/' || true)
+          changed=$(git diff --name-only --diff-filter=AM HEAD^ HEAD \
+            | grep -E '^(modules|scanners|run-tasks|chaos-providers)/' || true)
           if [ -z "$changed" ]; then
-            echo "No module changes detected"
-            echo "modules_found=false" >> $GITHUB_OUTPUT
+            echo "No manifest changes detected"
+            echo "manifests_found=false" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          echo "Changed files:"
-          echo "$changed"
-
-          find_module_root() {
-            local dir=$(dirname "$1")
+          find_manifest_root() {
+            local dir
+            dir=$(dirname "$1")
             while [ "$dir" != "." ] && [ "$dir" != "/" ]; do
-              [ -f "$dir/module.yaml" ] && echo "$dir" && return 0
-              [ "$dir" = "modules" ] && return 1
+              [ -f "$dir/manifest.yaml" ] && echo "$dir" && return 0
               dir=$(dirname "$dir")
             done
             return 1
           }
 
           dirs=""
-          for file in $changed; do
-            root=$(find_module_root "$file") && dirs="$dirs$root"$'\n'
+          for f in $changed; do
+            root=$(find_manifest_root "$f") && dirs="$dirs$root"$'\n'
           done
 
           unique=$(echo "$dirs" | sort -u | sed '/^$/d')
           if [ -z "$unique" ]; then
-            echo "No valid modules found"
-            echo "modules_found=false" >> $GITHUB_OUTPUT
+            echo "No publishable manifests found"
+            echo "manifests_found=false" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          echo "Modules to publish:"
+          echo "Manifests to publish:"
           echo "$unique"
-
-          modules_json=$(echo "$unique" | jq -R -s -c 'split("\n") | map(select(length > 0))')
-          echo "modules_json=$modules_json" >> $GITHUB_OUTPUT
-          echo "modules_found=true" >> $GITHUB_OUTPUT
+          json=$(echo "$unique" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "manifests_json=$json" >> $GITHUB_OUTPUT
+          echo "manifests_found=true" >> $GITHUB_OUTPUT
 
   register:
     name: Register
     runs-on: ubuntu-latest
     needs: prepare
-    if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.modules_found == 'true'
+    if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.manifests_found == 'true'
 
     strategy:
       matrix:
-        module_path: ${{ fromJson(needs.prepare.outputs.modules_json) }}
+        manifest_dir: ${{ fromJson(needs.prepare.outputs.manifests_json) }}
       fail-fast: false
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Validate structure
-        run: |
-          MODULE="${{ matrix.module_path }}"
-          [ -d "$MODULE" ]             || { echo "::error::Directory not found: $MODULE"; exit 1; }
-          [ -f "$MODULE/module.yaml" ] || { echo "::error::module.yaml missing"; exit 1; }
-          [ -f "$MODULE/main.tf" ]     || { echo "::error::main.tf missing"; exit 1; }
-
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.6.6"
 
       - name: Install Lace CLI
         run: |
@@ -154,30 +135,37 @@ jobs:
 
       - name: Authenticate
         env:
-          LACE_REGISTRY_KEY: ${{ secrets.LACE_REGISTRY_KEY }}
+          LACE_REGISTRY_KEY: ${{ secrets.LACE_REGISTRY_BOT_KEY }}
         run: |
-          [ -z "$LACE_REGISTRY_KEY" ] && { echo "::error::LACE_REGISTRY_KEY secret not set"; exit 1; }
+          [ -z "$LACE_REGISTRY_KEY" ] && { echo "::error::LACE_REGISTRY_BOT_KEY secret not set"; exit 1; }
           lace whoami
 
-      - name: Register module
-        env:
-          LACE_REGISTRY_KEY: ${{ secrets.LACE_REGISTRY_KEY }}
+      - name: Resolve axis
+        id: axis
         run: |
-          lace terraform-registry register \
-            --module-path "${{ matrix.module_path }}" \
-            --commit-sha "${{ github.sha }}" \
-            --ref "${{ github.ref }}" \
-            --actor "${{ github.actor }}"
+          DIR="${{ matrix.manifest_dir }}"
+          AXIS_DIR=$(echo "$DIR" | cut -d/ -f1)
+          case "$AXIS_DIR" in
+            modules)         AXIS=module ;;
+            scanners)        AXIS=scanner ;;
+            run-tasks)       AXIS=run_task ;;
+            chaos-providers) AXIS=chaos_provider ;;
+            *)               echo "::error::Unknown axis dir: $AXIS_DIR"; exit 1 ;;
+          esac
+          echo "axis=$AXIS" >> $GITHUB_OUTPUT
 
-      - name: Verify registration
+      - name: Register
         env:
-          LACE_REGISTRY_KEY: ${{ secrets.LACE_REGISTRY_KEY }}
+          LACE_REGISTRY_KEY: ${{ secrets.LACE_REGISTRY_BOT_KEY }}
         run: |
-          MODULE="${{ matrix.module_path }}"
-          NAME=$(grep "^  name:" "$MODULE/module.yaml" | head -1 | sed 's/^[^:]*: *//' | tr -d '"')
-          SYSTEM=$(grep "^  system:" "$MODULE/module.yaml" | head -1 | sed 's/^[^:]*: *//' | tr -d '"')
-          echo "Verifying: $SYSTEM/$NAME"
-          lace terraform-registry get "$NAME" "$SYSTEM"
+          DIR="${{ matrix.manifest_dir }}"
+          AXIS="${{ steps.axis.outputs.axis }}"
+          README_FLAG=""
+          [ -f "$DIR/README.md" ] && README_FLAG="--readme $DIR/README.md"
+          lace registry register \
+            --axis "$AXIS" \
+            --manifest "$DIR/manifest.yaml" \
+            $README_FLAG
 
   summary:
     name: Summary
@@ -188,23 +176,23 @@ jobs:
     steps:
       - name: Report
         run: |
-          echo "# Module Registration" >> $GITHUB_STEP_SUMMARY
+          echo "# Registry Publish" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ "${{ needs.prepare.outputs.modules_found }}" != "true" ]; then
-            echo "No module changes detected." >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.prepare.outputs.manifests_found }}" != "true" ]; then
+            echo "No manifest changes detected." >> $GITHUB_STEP_SUMMARY
             exit 0
           fi
 
-          echo "## Modules" >> $GITHUB_STEP_SUMMARY
-          echo '${{ needs.prepare.outputs.modules_json }}' | jq -r '.[] | "- `" + . + "`"' >> $GITHUB_STEP_SUMMARY
+          echo "## Manifests" >> $GITHUB_STEP_SUMMARY
+          echo '${{ needs.prepare.outputs.manifests_json }}' \
+            | jq -r '.[] | "- `" + . + "`"' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-
           echo "Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ needs.register.result }}" = "success" ]; then
-            echo "**Result:** All modules registered successfully." >> $GITHUB_STEP_SUMMARY
+            echo "**Result:** All manifests registered." >> $GITHUB_STEP_SUMMARY
           elif [ "${{ needs.register.result }}" = "failure" ]; then
             echo "**Result:** Registration failed." >> $GITHUB_STEP_SUMMARY
           else

@@ -1,0 +1,37 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: ecs-service
+version: v1.0.0
+displayName: "AWS ECS Service"
+description: "AWS ECS Fargate service with load balancer integration and network configuration"
+categories: [compute, containers, ecs]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/ecs/service
+  example: |
+    module "ecs_service" {
+      source = "git::https://github.com/lace-cloud/registry.git//modules/aws/ecs/service?ref=v1.0.0"
+
+      name            = "my-service"
+      cluster_id      = module.ecs_cluster.id
+      task_definition = module.task_definition.arn
+      desired_count   = 2
+
+      subnet_ids         = ["subnet-abc123", "subnet-def456"]
+      security_group_ids = ["sg-123456"]
+
+      target_group_arn = module.target_group.arn
+      container_name   = "app"
+      container_port   = 80
+
+      tags = {
+        Environment = "production"
+      }
+    }

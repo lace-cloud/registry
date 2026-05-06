@@ -1,0 +1,31 @@
+apiVersion: '1'
+axis: scanner
+author: lace
+name: aws-cost
+version: v1.0.0
+displayName: "AWS Cost"
+description: "Pulls AWS Cost & Usage Report data into the Observatory finops surface as daily-amortized cost time-series + per-resource attribution."
+categories: [observatory, finops, aws]
+configSchema:
+  type: object
+  properties:
+    payerAccountId:
+      type: string
+      pattern: "^[0-9]{12}$"
+      description: "AWS payer account that owns the CUR S3 export."
+    curBucket: { type: string, description: "S3 bucket holding the CUR Parquet export." }
+    curPrefix: { type: string, description: "S3 prefix under the CUR bucket." }
+    region: { type: string, default: "us-east-1" }
+  required: [payerAccountId, curBucket, curPrefix]
+  additionalProperties: false
+runtime:
+  location: lace-managed
+  handlerId: lace/aws-cost
+authors: ["Lace Team <team@lace.cloud>"]
+outputs:
+  time_series:
+    schemas:
+      cost_daily:
+        granularity: daily
+        dimensions: [cloud_account_id, service, region, resource_uri, team_id, stack_id]
+        metrics: [unblended_cost_usd, amortized_cost_usd, usage_amount]

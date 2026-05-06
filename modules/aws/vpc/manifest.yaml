@@ -1,0 +1,32 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: vpc
+version: v1.0.0
+displayName: "AWS VPC"
+description: "AWS VPC with public and private subnets, Internet Gateway, NAT Gateway, and route tables"
+categories: [networking, vpc]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/vpc
+  example: |
+    module "vpc" {
+      source = "git::https://github.com/lace-cloud/registry.git//modules/aws/vpc?ref=v1.0.0"
+
+      name       = "my-app-prod"
+      cidr_block = "10.0.0.0/16"
+
+      public_subnet_count  = 2
+      private_subnet_count = 2
+      enable_nat_gateway   = true
+
+      tags = {
+        Environment = "production"
+      }
+    }
