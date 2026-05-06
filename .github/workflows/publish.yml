@@ -135,9 +135,9 @@ jobs:
 
       - name: Authenticate
         env:
-          LACE_REGISTRY_KEY: ${{ secrets.LACE_REGISTRY_BOT_KEY }}
+          LACE_REGISTRY_KEY: ${{ secrets.LACE_REGISTRY_KEY }}
         run: |
-          [ -z "$LACE_REGISTRY_KEY" ] && { echo "::error::LACE_REGISTRY_BOT_KEY secret not set"; exit 1; }
+          [ -z "$LACE_REGISTRY_KEY" ] && { echo "::error::LACE_REGISTRY_KEY secret not set"; exit 1; }
           lace whoami
 
       - name: Resolve axis
@@ -156,7 +156,7 @@ jobs:
 
       - name: Register
         env:
-          LACE_REGISTRY_KEY: ${{ secrets.LACE_REGISTRY_BOT_KEY }}
+          LACE_REGISTRY_KEY: ${{ secrets.LACE_REGISTRY_KEY }}
         run: |
           DIR="${{ matrix.manifest_dir }}"
           AXIS="${{ steps.axis.outputs.axis }}"

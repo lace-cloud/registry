@@ -62,9 +62,9 @@ A push to `main` that touches `modules/**`, `scanners/**`, `run-tasks/**`, or `c
 1. Detect changed `manifest.yaml` directories.
 2. Install the `lace` CLI from `releases.lace.cloud`.
 3. Per manifest: `lace registry register --axis <axis> --manifest <dir>/manifest.yaml --readme <dir>/README.md`.
-4. The CLI POSTs to `/api/v1/registry/index` with `Authorization: Bearer ${LACE_REGISTRY_BOT_KEY}`.
+4. The CLI POSTs to `/api/v1/registry/index` with `Authorization: Bearer ${LACE_REGISTRY_KEY}`.
 
-`LACE_REGISTRY_BOT_KEY` is a service-token API key with the `REGISTRY_PUBLISH` scope (publishes public manifests, `org_id = NULL`). It is held only by this repo's CI.
+`LACE_REGISTRY_KEY` is a service-token API key with the `REGISTRY_PUBLISH` scope (publishes public manifests, `org_id = NULL`). It is held only by this repo's CI.
 
 The publish endpoint is idempotent on `(axis, author, name, version) + sha256(manifest.yaml)`. Re-publishing identical content is a no-op (`result: 'unchanged'`). Re-publishing a different `manifest.yaml` at the same `(axis, author, name, version)` is rejected (409): manifests are immutable per version.
 
@@ -87,10 +87,10 @@ Once merged to `develop`, open a develop → main PR. Merging to `main` publishe
 
 ## Running a private registry
 
-Customer orgs that want PR-reviewed authoring of internal manifests use the [`registry-template`](https://github.com/lace-cloud/registry-template) repo as a starting point. Same folder structure, same workflows, same `lace registry register` CLI — the difference is the API key's scope:
+Customer orgs that want PR-reviewed authoring of internal manifests use the [`registry-template`](https://github.com/lace-cloud/registry-template) repo as a starting point. Same folder structure, same workflows, same `LACE_REGISTRY_KEY` secret name, same `lace registry register` CLI — the only difference is the API key's scope:
 
-- **This repo (public):** `LACE_REGISTRY_BOT_KEY` with `REGISTRY_PUBLISH` scope. Manifests land at `org_id = NULL`, visible to every Lace org.
-- **Customer private repo:** `LACE_REGISTRY_KEY` with `REGISTRY_PUBLISH:org` scope. Manifests land at `org_id = <caller's org>`, visible only to that org's catalog browse.
+- **This repo (public):** key holds `REGISTRY_PUBLISH` scope. Manifests land at `org_id = NULL`, visible to every Lace org.
+- **Customer private repo:** key holds `REGISTRY_PUBLISH:org` scope. Manifests land at `org_id = <caller's org>`, visible only to that org's catalog browse.
 
 The unified publish endpoint clamps `org_id` server-side based on the bearer token's scope; the request body cannot override.
 
@@ -98,7 +98,7 @@ The unified publish endpoint clamps `org_id` server-side based on the bearer tok
 
 ### `authentication failed` / `unauthorized`
 
-Verify `LACE_REGISTRY_BOT_KEY` is set in repo secrets and the service token has the `REGISTRY_PUBLISH` scope.
+Verify `LACE_REGISTRY_KEY` is set in repo secrets and the service token has the `REGISTRY_PUBLISH` scope.
 
 ### Manifest envelope rejected at publish
 

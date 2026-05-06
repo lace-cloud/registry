@@ -44,7 +44,7 @@ The deep zod validation runs server-side at publish time. CI is a fail-fast enve
 |-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Authorize | Runs only for `workflow_dispatch`. Generates GitHub App token (`LACE_ORG_CI_APP_ID` + `LACE_ORG_CI_PRIVATE_KEY`), checks actor's membership in `platform-team`.                                                                                                                                          |
 | Prepare   | For push: `git diff HEAD^ HEAD` over the four axis paths to find changed manifest dirs (walk-up to `manifest.yaml`). For dispatch: validates the provided `manifest_dir` exists.                                                                                                                         |
-| Register  | Matrix per manifest dir (`fail-fast: false`). Each: install Lace CLI → `lace whoami` → resolve axis from the dir prefix → `lace registry register --axis <axis> --manifest <dir>/manifest.yaml --readme <dir>/README.md`. Auth: `LACE_REGISTRY_KEY` env (sourced from repo secret `LACE_REGISTRY_BOT_KEY`). |
+| Register  | Matrix per manifest dir (`fail-fast: false`). Each: install Lace CLI → `lace whoami` → resolve axis from the dir prefix → `lace registry register --axis <axis> --manifest <dir>/manifest.yaml --readme <dir>/README.md`. Auth: repo secret `LACE_REGISTRY_KEY` (the env-var name the CLI reads). |
 | Summary   | Reports registered manifests and result.                                                                                                                                                                                                                                                                  |
 
 **Concurrency:** `publish-${{ github.ref }}`, does **not** cancel in-progress (every merge must publish).
@@ -66,21 +66,21 @@ CODEOWNERS pins `*` and the four axis subdirs to `@lace-cloud/platform-team`. Pa
 
 | Secret                       | Purpose                                                                                       | Used by                       |
 |------------------------------|-----------------------------------------------------------------------------------------------|-------------------------------|
-| `LACE_REGISTRY_BOT_KEY`      | Service-token API key with `REGISTRY_PUBLISH` scope. Publishes public manifests (`org_id = NULL`). | `publish.yml` (Register job)  |
+| `LACE_REGISTRY_KEY`      | Service-token API key with `REGISTRY_PUBLISH` scope. Publishes public manifests (`org_id = NULL`). | `publish.yml` (Register job)  |
 | `LACE_ORG_CI_APP_ID`         | GitHub App ID for org API access (membership lookup).                                         | `publish.yml` (Authorize job) |
 | `LACE_ORG_CI_PRIVATE_KEY`    | GitHub App private key.                                                                       | `publish.yml` (Authorize job) |
 
 ### Registry Bot
 
 - **User:** `Lace Registry Bot` (`registry-bot@lace.cloud`).
-- **API Key:** service token with the `REGISTRY_PUBLISH` scope (publishes public manifests). Stored as repo secret `LACE_REGISTRY_BOT_KEY`.
+- **API Key:** service token with the `REGISTRY_PUBLISH` scope (publishes public manifests). Stored as repo secret `LACE_REGISTRY_KEY`.
 - Publishes public manifests via `POST /api/v1/registry/index`. The endpoint clamps `org_id = NULL` on the resulting row.
 
 ## Troubleshooting
 
 ### CI validation passes but publish fails
 
-The Register job requires `LACE_REGISTRY_BOT_KEY`. Verify the secret is set and the service token is active + scoped to `REGISTRY_PUBLISH`.
+The Register job requires `LACE_REGISTRY_KEY`. Verify the secret is set and the service token is active + scoped to `REGISTRY_PUBLISH`.
 
 ### Manual dispatch authorization failure
 
