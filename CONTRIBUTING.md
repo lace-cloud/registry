@@ -35,9 +35,10 @@ Modules carry `*.tf` files alongside `manifest.yaml` and may nest under a cloud-
 - `hooks.available` ⊆ {`pre_plan`, `post_plan`, `pre_apply`, `post_apply`, `post_destroy`}, ≥ 1 entry. `hooks.default` ⊆ `hooks.available`.
 - `signing` is `{ kind: hmac_sha256 }` for any task carrying secrets; `{ kind: none }` reserved for in-tree dispatch.
 - `verdictMode` ∈ {`sync`, `async`}.
-- `endpointSource: 'install'` (per-org URL on the install row) or `'manifest'` (single URL pinned in the manifest; `endpointUrl` required).
-
-> **Note:** Lace-managed run-task manifests are not seeded here yet. The endpoint-source contract for `runtime: { location: lace-managed }` lands with `run-tasks-platform-axis` Arc 0, which also ships the in-tree dispatcher and the first `lace/snyk-bridge` and `lace/datadog-notifier` seeds.
+- `endpointSource` ∈ {`'in_tree'`, `'manifest'`, `'install'`}.
+  - `'in_tree'` is reserved for `runtime.location: 'lace-managed'`. Requires `runtime.handlerId`, must omit `endpointUrl`, and must declare `signing.kind: 'none'`. Used by first-party manifests like `lace/snyk-bridge` and `lace/datadog-notifier` whose handler ships in `apps/api/src/lib/run-tasks/handlers/`.
+  - `'manifest'`: a single URL pinned in the manifest (`endpointUrl` required); every install dispatches there.
+  - `'install'`: the URL lives per-org on `installed_run_task.endpoint_url`; the manifest must NOT declare `endpointUrl`.
 
 ### `chaos-providers/`
 
