@@ -15,6 +15,8 @@ authors: ["Lace Team <team@lace.cloud>"]
 bundle:
   system: aws
   modulePath: modules/aws/alb/target_group
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
   example: |
     module "target_group" {
       source = "git::https://github.com/lace-cloud/registry.git//modules/aws/alb/target_group?ref=v1.0.0"

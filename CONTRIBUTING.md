@@ -1,6 +1,6 @@
 # Contributing
 
-This repo holds the public `lace/*` manifests for four axes: Terraform modules, observatory scanners, run-tasks, and chaos providers. PRs are reviewed by `@lace-cloud/platform-team`.
+This repo holds the public `lace/*` manifests for four axes: Terraform modules, observatory scanners, handlers, and chaos providers. PRs are reviewed by `@lace-cloud/platform-team`.
 
 ## Folder shape
 
@@ -9,7 +9,7 @@ This repo holds the public `lace/*` manifests for four axes: Terraform modules, 
 <axis>/<author>/<name>/README.md
 ```
 
-`<axis>` ∈ {`modules`, `scanners`, `run-tasks`, `chaos-providers`}. `<author>` is `lace` for first-party manifests; partner namespaces (e.g. `wiz`, `snyk`, `gremlin`) are added with paired CODEOWNERS entries when partnerships land.
+`<axis>` ∈ {`modules`, `scanners`, `handlers`, `chaos-providers`}. `<author>` is `lace` for first-party manifests; partner namespaces (e.g. `wiz`, `snyk`, `gremlin`) are added with paired CODEOWNERS entries when partnerships land.
 
 Modules carry `*.tf` files alongside `manifest.yaml` and may nest under a cloud-system tier (e.g. `modules/aws/<name>/main.tf`). Non-module axes are manifest + README only.
 
@@ -29,16 +29,16 @@ Modules carry `*.tf` files alongside `manifest.yaml` and may nest under a cloud-
 - For `runtime: { location: lace-managed }` (the default for `lace/*` scanners), the handler must be wired in `apps/api/src/lib/scanners/in-tree-handlers.ts` in the lace monorepo. Manifests can land here ahead of the handler — they will publish but stay un-installable until the handler ships in `observatory-platform-axis` Arc 0.
 - Customer-hosted scanners declare `runtime: { location: customer-hosted, dispatch: lace-pull | customer-push, ... }` and must include `oidcTrust` (lace-pull) or `scopeRequired` (customer-push).
 
-### `run-tasks/`
+### `handlers/`
 
-- `manifest.yaml` envelope as above with `axis: run_task`.
+- `manifest.yaml` envelope as above with `axis: handler`.
 - `hooks.available` ⊆ {`pre_plan`, `post_plan`, `pre_apply`, `post_apply`, `post_destroy`}, ≥ 1 entry. `hooks.default` ⊆ `hooks.available`.
 - `signing` is `{ kind: hmac_sha256 }` for any task carrying secrets; `{ kind: none }` reserved for in-tree dispatch.
 - `verdictMode` ∈ {`sync`, `async`}.
 - `endpointSource` ∈ {`'in_tree'`, `'manifest'`, `'install'`}.
-  - `'in_tree'` is reserved for `runtime.location: 'lace-managed'`. Requires `runtime.handlerId`, must omit `endpointUrl`, and must declare `signing.kind: 'none'`. Used by first-party manifests like `lace/snyk-bridge` and `lace/datadog-notifier` whose handler ships in `apps/api/src/lib/run-tasks/handlers/`.
+  - `'in_tree'` is reserved for `runtime.location: 'lace-managed'`. Requires `runtime.handlerId`, must omit `endpointUrl`, and must declare `signing.kind: 'none'`. Used by first-party manifests like `lace/snyk-bridge` and `lace/datadog-notifier` whose handler ships in `apps/api/src/lib/handlers/`.
   - `'manifest'`: a single URL pinned in the manifest (`endpointUrl` required); every install dispatches there.
-  - `'install'`: the URL lives per-org on `installed_run_task.endpoint_url`; the manifest must NOT declare `endpointUrl`.
+  - `'install'`: the URL lives per-org on `installed_handler.endpoint_url`; the manifest must NOT declare `endpointUrl`.
 
 ### `chaos-providers/`
 

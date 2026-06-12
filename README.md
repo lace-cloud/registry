@@ -8,7 +8,7 @@ The public Lace registry monorepo. One repo, four artifact axes, one publish end
 registry/
 ├── modules/                ← Terraform modules
 ├── scanners/               ← Observatory scanners (drift, cost, anomalies, …)
-├── run-tasks/              ← Run-task hooks (HCP-style pre/post-plan + apply gates)
+├── handlers/               ← Handlers (Run-lifecycle gates: pre/post-plan + apply)
 └── chaos-providers/        ← Chaos engineering providers (AWS, Wiz, Gremlin, …)
 ```
 
@@ -34,7 +34,7 @@ Every artifact ships a `manifest.yaml` with the same base envelope:
 
 ```yaml
 apiVersion: '1'
-axis: module | scanner | run_task | chaos_provider
+axis: module | scanner | handler | chaos_provider
 author: lace                       # kebab-case (1-64 chars)
 name: aws-iam-role                 # kebab-case (1-64 chars), unique within axis+author
 version: v1.0.0                    # semver, must be 'v'-prefixed
@@ -49,7 +49,7 @@ authors: ["Lace Team <team@lace.cloud>"]
 # Axis-specific fields layered on top:
 # - module: bundle.{system, modulePath, gitUrl, commitSha, ...}
 # - scanner: outputs.{findings, snapshots, time_series, inventory}
-# - run_task: hooks.{available, default}, endpointSource, signing, verdictMode
+# - handler: hooks.{available, default}, endpointSource, signing, verdictMode
 # - chaos_provider: targetCatalog, callbackSigning
 ```
 
@@ -57,7 +57,7 @@ Validation: per-axis zod schemas in `apps/api/src/lib/registry/axes/*.ts` are th
 
 ## How publishing works
 
-A push to `main` that touches `modules/**`, `scanners/**`, `run-tasks/**`, or `chaos-providers/**` triggers `publish.yml`:
+A push to `main` that touches `modules/**`, `scanners/**`, `handlers/**`, or `chaos-providers/**` triggers `publish.yml`:
 
 1. Detect changed `manifest.yaml` directories.
 2. Install the `lace` CLI from `releases.lace.cloud`.

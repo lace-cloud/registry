@@ -15,6 +15,8 @@ authors: ["Lace Team <team@lace.cloud>"]
 bundle:
   system: aws
   modulePath: modules/aws/ecr/repository
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
   example: |
     module "ecr" {
       source               = "git::https://github.com/lace-cloud/registry.git//modules/aws/ecr/repository?ref=v1.0.0"

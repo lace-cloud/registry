@@ -15,6 +15,8 @@ authors: ["Lace Team <team@lace.cloud>"]
 bundle:
   system: aws
   modulePath: modules/aws/cognito/user_pool
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
   example: |
     module "user_pool" {
       source = "git::https://github.com/lace-cloud/registry.git//modules/aws/cognito/user_pool?ref=v1.0.0"

@@ -15,6 +15,8 @@ authors: ["Lace Team <team@lace.cloud>"]
 bundle:
   system: aws
   modulePath: modules/aws/alb/listener_rule
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
   example: |
     module "listener_rule" {
       source = "git::https://github.com/lace-cloud/registry.git//modules/aws/alb/listener_rule?ref=v1.0.0"

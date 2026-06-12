@@ -1,5 +1,5 @@
 apiVersion: '1'
-axis: run_task
+axis: handler
 author: lace
 name: snyk-bridge
 version: v1.0.0

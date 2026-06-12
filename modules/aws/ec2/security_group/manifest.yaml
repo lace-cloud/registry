@@ -15,6 +15,8 @@ authors: ["Lace Team <team@lace.cloud>"]
 bundle:
   system: aws
   modulePath: modules/aws/ec2/security_group
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
   example: |
     module "sg" {
       source      = "git::https://github.com/lace-cloud/registry.git//modules/aws/ec2/security_group?ref=v1.0.0"

@@ -19,9 +19,12 @@ resource "aws_security_group" "this" {
   dynamic "egress" {
     for_each = var.egress_rules
     content {
-      from_port       = egress.value.from_port
-      to_port         = egress.value.to_port
-      protocol        = egress.value.protocol
+      from_port = egress.value.from_port
+      to_port   = egress.value.to_port
+      protocol  = egress.value.protocol
+      # Egress CIDRs are consumer-supplied; a generic SG module cannot forbid
+      # 0.0.0.0/0 — that policy belongs to the consuming stack's gates.
+      #tfsec:ignore:AVD-AWS-0104
       cidr_blocks     = lookup(egress.value, "cidr_blocks", null)
       security_groups = lookup(egress.value, "security_groups", null)
       self            = lookup(egress.value, "self", null)

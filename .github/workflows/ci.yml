@@ -32,7 +32,7 @@ jobs:
           files: |
             modules/**
             scanners/**
-            run-tasks/**
+            handlers/**
             chaos-providers/**
 
       - name: Resolve manifest roots
@@ -109,7 +109,7 @@ jobs:
             modules)
               [ -f "$DIR/main.tf" ] || { echo "::error::main.tf missing in $DIR"; exit 1; }
               ;;
-            scanners|run-tasks|chaos-providers)
+            scanners|handlers|chaos-providers)
               # Non-module axes are manifest + README only; no .tf files.
               ;;
             *)
@@ -126,7 +126,7 @@ jobs:
           case "$AXIS" in
             modules)         AXIS_KEY=module ;;
             scanners)        AXIS_KEY=scanner ;;
-            run-tasks)       AXIS_KEY=run_task ;;
+            handlers)        AXIS_KEY=handler ;;
             chaos-providers) AXIS_KEY=chaos_provider ;;
           esac
 
@@ -166,7 +166,7 @@ jobs:
             o_name=$(grep "^name:" "$f" | head -1 | sed 's/^name:[[:space:]]*//' | tr -d '"')
             [ "$o_axis" = "$AXIS" ] && [ "$o_author" = "$AUTHOR" ] && [ "$o_name" = "$NAME" ] \
               && dupes="$dupes$other_dir"$'\n'
-          done < <(find modules scanners run-tasks chaos-providers -name manifest.yaml -type f 2>/dev/null)
+          done < <(find modules scanners handlers chaos-providers -name manifest.yaml -type f 2>/dev/null)
 
           if [ -n "$dupes" ]; then
             echo "::error::Duplicate (axis=$AXIS, author=$AUTHOR, name=$NAME) found in:"
@@ -218,6 +218,18 @@ jobs:
           cd "${{ matrix.manifest_dir }}"
           terraform init -backend=false
           terraform validate
+
+      - name: Install Lace CLI + tfsec
+        if: startsWith(matrix.manifest_dir, 'modules/')
+        run: |
+          wget -q https://releases.lace.cloud/lace-cli-linux-amd64 -O lace
+          chmod +x lace && sudo mv lace /usr/local/bin/lace
+          wget -q https://github.com/aquasecurity/tfsec/releases/latest/download/tfsec-linux-amd64 -O tfsec
+          chmod +x tfsec && sudo mv tfsec /usr/local/bin/tfsec
+
+      - name: Terraform security scan
+        if: startsWith(matrix.manifest_dir, 'modules/')
+        run: lace terraform scan --path "${{ matrix.manifest_dir }}" --severity HIGH
 
   summary:
     name: Summary

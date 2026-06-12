@@ -1,3 +1,6 @@
+# Protocol is consumer-chosen; HTTP listeners are a legitimate use of this
+# generic module (e.g. the redirect-to-HTTPS pattern).
+#tfsec:ignore:AVD-AWS-0054
 resource "aws_lb_listener" "this" {
   load_balancer_arn = var.load_balancer_arn
   port              = var.port

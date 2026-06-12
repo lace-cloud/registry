@@ -14,7 +14,7 @@ Runs on PRs targeting `develop` or `main`.
 
 | Job              | What it does                                                                                                                                                  |
 |------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Detect Manifests | `tj-actions/changed-files` over `{modules,scanners,run-tasks,chaos-providers}/**`. Walks up to find `manifest.yaml` roots. Fails if any changed file is orphaned (no `manifest.yaml` ancestor). |
+| Detect Manifests | `tj-actions/changed-files` over `{modules,scanners,handlers,chaos-providers}/**`. Walks up to find `manifest.yaml` roots. Fails if any changed file is orphaned (no `manifest.yaml` ancestor). |
 | Validate         | Matrix per manifest dir (`fail-fast: false`). Per-axis steps below.                                                                                            |
 | Summary          | Rollup gate — reports pass/fail to PR.                                                                                                                        |
 
@@ -24,7 +24,7 @@ Runs on PRs targeting `develop` or `main`.
 2. **Envelope check** — required fields (`apiVersion`, `axis`, `author`, `name`, `version`, `displayName`, `configSchema`, `runtime`) are present; `axis` matches the directory.
 3. **Identity uniqueness** — `(axis, author, name)` is unique across the repo.
 4. **Version bump** — `version` differs from base branch when `*.tf` changed (modules only) or when the manifest itself changed.
-5. **Terraform** (modules only) — `terraform fmt -check -recursive` + `terraform init -backend=false && terraform validate`.
+5. **Terraform** (modules only) — `terraform fmt -check -recursive` + `terraform init -backend=false && terraform validate` + `lace terraform scan --severity HIGH` (tfsec security gate).
 
 The deep zod validation runs server-side at publish time. CI is a fail-fast envelope check.
 
@@ -35,7 +35,7 @@ The deep zod validation runs server-side at publish time. CI is a fail-fast enve
 
 | Trigger             | Condition                                                                                  | Authorization                                |
 |---------------------|--------------------------------------------------------------------------------------------|----------------------------------------------|
-| Push to `main`      | `paths: [modules/**, scanners/**, run-tasks/**, chaos-providers/**]`                       | Already gated by branch protection.          |
+| Push to `main`      | `paths: [modules/**, scanners/**, handlers/**, chaos-providers/**]`                       | Already gated by branch protection.          |
 | `workflow_dispatch` | Manual, accepts `manifest_dir` input                                                       | Requires `@lace-cloud/platform-team` member. |
 
 **Jobs:** Authorize (conditional) → Prepare → Register (matrix) → Summary.
