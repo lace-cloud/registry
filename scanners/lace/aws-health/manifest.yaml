@@ -1,0 +1,41 @@
+apiVersion: '1'
+axis: scanner
+author: lace
+name: aws-health
+version: v1.0.0
+displayName: "AWS Health"
+description: "Pulls AWS Health events (issues, scheduled changes, account notifications) into Observatory's findings stream so the org sees abnormal account state next to drift + cost signals."
+categories: [observatory, health, aws]
+configSchema:
+  type: object
+  properties:
+    eventCategories:
+      type: array
+      items: { type: string, enum: [issue, accountNotification, scheduledChange, investigation] }
+      default: [issue, accountNotification, scheduledChange]
+  additionalProperties: false
+runtime:
+  location: lace-managed
+  handlerId: lace/aws-health
+authors: ["Lace Team <team@lace.cloud>"]
+outputs:
+  findings:
+    schemas:
+      health_event:
+        type: object
+        properties:
+          arn: { type: string }
+          cloudAccountId: { type: string }
+          service: { type: string }
+          eventTypeCategory: { type: string, enum: [issue, accountNotification, scheduledChange, investigation] }
+          eventTypeCode: { type: string }
+          region: { type: string }
+          startTime: { type: string, format: date-time }
+          endTime: { type: string, format: date-time }
+          statusCode: { type: string, enum: [open, closed, upcoming] }
+          severity: { type: string, enum: [info, warning, critical] }
+          affectedEntities:
+            type: array
+            items: { type: string }
+          description: { type: string }
+        required: [arn, cloudAccountId, service, eventTypeCategory, eventTypeCode, statusCode, severity]

@@ -1,0 +1,43 @@
+apiVersion: '1'
+axis: scanner
+author: lace
+name: aws-anomalies
+version: v1.0.0
+displayName: "AWS Cost Anomalies"
+description: "Detects statistical cost anomalies over the daily-amortized cost time-series. One finding per detected anomaly, ranked by impact."
+categories: [observatory, finops, anomalies, aws]
+configSchema:
+  type: object
+  properties:
+    sensitivity:
+      type: string
+      enum: [low, medium, high]
+      default: medium
+      description: "Z-score threshold band. Higher sensitivity surfaces smaller deltas as anomalies."
+    minDailyCostUsd:
+      type: number
+      minimum: 0
+      default: 1.0
+      description: "Suppress anomalies on resources whose daily cost is below this floor."
+  additionalProperties: false
+runtime:
+  location: lace-managed
+  handlerId: lace/aws-anomalies
+authors: ["Lace Team <team@lace.cloud>"]
+outputs:
+  findings:
+    schemas:
+      cost_anomaly:
+        type: object
+        properties:
+          anomalyId: { type: string }
+          cloudAccountId: { type: string }
+          resourceUri: { type: string }
+          service: { type: string }
+          detectedAt: { type: string, format: date-time }
+          observedDailyCostUsd: { type: number }
+          baselineDailyCostUsd: { type: number }
+          deltaUsd: { type: number }
+          zScore: { type: number }
+          severity: { type: string, enum: [info, warning, critical] }
+        required: [anomalyId, cloudAccountId, resourceUri, detectedAt, observedDailyCostUsd, baselineDailyCostUsd, severity]

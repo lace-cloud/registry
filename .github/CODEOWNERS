@@ -1,1 +1,10 @@
-/.github/ @lace-cloud/platform-team
+*                            @lace-cloud/platform-team
+/modules/                    @lace-cloud/platform-team
+/scanners/lace/              @lace-cloud/platform-team
+/handlers/lace/             @lace-cloud/platform-team
+/chaos-providers/lace/       @lace-cloud/platform-team
+/.github/                    @lace-cloud/platform-team
+# Partner namespaces (added as partnerships land):
+# /scanners/wiz/             @lace-cloud/platform-team @wiz-team
+# /handlers/snyk/           @lace-cloud/platform-team @snyk-team
+# /chaos-providers/gremlin/  @lace-cloud/platform-team @gremlin-team

@@ -1,0 +1,45 @@
+apiVersion: '1'
+axis: scanner
+author: lace
+name: aws-commitments
+version: v1.0.0
+displayName: "AWS Reserved Instances + Savings Plans"
+description: "Tracks AWS Reserved Instance and Savings Plan inventory + utilization + coverage as snapshots."
+categories: [observatory, finops, commitments, aws]
+configSchema:
+  type: object
+  properties: {}
+  additionalProperties: false
+runtime:
+  location: lace-managed
+  handlerId: lace/aws-commitments
+authors: ["Lace Team <team@lace.cloud>"]
+outputs:
+  snapshots:
+    schemas:
+      ri_snapshot:
+        type: object
+        properties:
+          cloudAccountId: { type: string }
+          reservationId: { type: string }
+          instanceFamily: { type: string }
+          region: { type: string }
+          startDate: { type: string, format: date-time }
+          endDate: { type: string, format: date-time }
+          purchasedHours: { type: number }
+          utilizedHours: { type: number }
+          utilizationPercent: { type: number }
+          unblendedCostUsd: { type: number }
+        required: [cloudAccountId, reservationId, instanceFamily, region, startDate, endDate]
+      sp_snapshot:
+        type: object
+        properties:
+          cloudAccountId: { type: string }
+          savingsPlanId: { type: string }
+          planType: { type: string, enum: [Compute, EC2Instance, SageMaker] }
+          commitmentUsdPerHour: { type: number }
+          utilizationPercent: { type: number }
+          coveragePercent: { type: number }
+          startDate: { type: string, format: date-time }
+          endDate: { type: string, format: date-time }
+        required: [cloudAccountId, savingsPlanId, planType, startDate, endDate]

@@ -1,0 +1,67 @@
+apiVersion: '1'
+axis: scanner
+author: lace
+name: aws-cloud-inventory
+version: v1.0.0
+displayName: "AWS Cloud Inventory"
+description: "Enumerates every AWS resource the org owns into the inventory store, with attribute payloads for cross-cutting joins (drift, cost attribution, governance)."
+categories: [observatory, inventory, aws]
+configSchema:
+  type: object
+  properties:
+    resourceTypes:
+      type: array
+      items: { type: string }
+      description: "AWS resource types to enumerate. Defaults to the curated lace-aws-supported list."
+    regions:
+      type: array
+      items: { type: string }
+  additionalProperties: false
+runtime:
+  location: lace-managed
+  handlerId: lace/aws-cloud-inventory
+authors: ["Lace Team <team@lace.cloud>"]
+outputs:
+  inventory:
+    schemas:
+      ec2_instance:
+        attributesSchema:
+          type: object
+          properties:
+            instanceId: { type: string }
+            instanceType: { type: string }
+            state: { type: string }
+            launchTime: { type: string, format: date-time }
+            tags: { type: object, additionalProperties: { type: string } }
+          required: [instanceId, instanceType, state]
+      rds_instance:
+        attributesSchema:
+          type: object
+          properties:
+            dbInstanceIdentifier: { type: string }
+            engine: { type: string }
+            engineVersion: { type: string }
+            instanceClass: { type: string }
+            allocatedStorage: { type: integer }
+            multiAZ: { type: boolean }
+            tags: { type: object, additionalProperties: { type: string } }
+          required: [dbInstanceIdentifier, engine, instanceClass]
+      s3_bucket:
+        attributesSchema:
+          type: object
+          properties:
+            bucketName: { type: string }
+            region: { type: string }
+            encryption: { type: string }
+            publicAccessBlock: { type: boolean }
+            tags: { type: object, additionalProperties: { type: string } }
+          required: [bucketName, region]
+      lambda_function:
+        attributesSchema:
+          type: object
+          properties:
+            functionName: { type: string }
+            runtime: { type: string }
+            memorySizeMb: { type: integer }
+            tags: { type: object, additionalProperties: { type: string } }
+          required: [functionName, runtime]

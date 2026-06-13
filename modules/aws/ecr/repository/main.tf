@@ -1,3 +1,6 @@
+# Tag mutability is consumer-chosen via var.image_tag_mutability; the module
+# must support mutable repos (the AWS default) as well as immutable ones.
+#tfsec:ignore:AVD-AWS-0031
 resource "aws_ecr_repository" "this" {
   name                 = var.name
   image_tag_mutability = var.image_tag_mutability

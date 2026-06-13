@@ -1,0 +1,35 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: cloudwatch-metric-alarm
+version: v1.0.0
+displayName: "AWS CloudWatch Metric Alarm"
+description: "AWS CloudWatch Metric Alarm for monitoring and alerting on AWS resource metrics"
+categories: [monitoring, cloudwatch, alerting]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/cloudwatch/metric_alarm
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
+  example: |
+    module "alarm" {
+      source              = "git::https://github.com/lace-cloud/registry.git//modules/aws/cloudwatch/metric_alarm?ref=v1.0.0"
+      alarm_name          = "high-cpu-alarm"
+      comparison_operator = "GreaterThanThreshold"
+      evaluation_periods  = 2
+      metric_name         = "CPUUtilization"
+      namespace           = "AWS/EC2"
+      period              = 300
+      statistic           = "Average"
+      threshold           = 80
+      alarm_actions       = ["arn:aws:sns:us-east-1:123456789:alerts"]
+      dimensions = {
+        InstanceId = "i-1234567890abcdef0"
+      }
+    }

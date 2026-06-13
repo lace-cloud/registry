@@ -1,0 +1,26 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: ecr-repository
+version: v1.0.0
+displayName: "AWS ECR Repository"
+description: "AWS ECR repository with configurable image scanning, encryption, and lifecycle policies"
+categories: [containers, ecr, storage]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/ecr/repository
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
+  example: |
+    module "ecr" {
+      source               = "git::https://github.com/lace-cloud/registry.git//modules/aws/ecr/repository?ref=v1.0.0"
+      name                 = "my-app"
+      image_tag_mutability = "IMMUTABLE"
+      scan_on_push         = true
+    }

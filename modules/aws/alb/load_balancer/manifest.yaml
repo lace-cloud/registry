@@ -1,0 +1,32 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: alb-load-balancer
+version: v1.0.0
+displayName: "AWS ALB Load Balancer"
+description: "AWS Application Load Balancer with subnets, security groups, and access logs"
+categories: [networking, load-balancing, alb]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/alb/load_balancer
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
+  example: |
+    module "alb" {
+      source = "git::https://github.com/lace-cloud/registry.git//modules/aws/alb/load_balancer?ref=v1.0.0"
+
+      name               = "my-alb"
+      internal           = false
+      security_group_ids = ["sg-123456"]
+      subnet_ids         = ["subnet-abc123", "subnet-def456"]
+
+      tags = {
+        Environment = "production"
+      }
+    }

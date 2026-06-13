@@ -1,0 +1,28 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: cloudwatch-log-group
+version: v1.0.0
+displayName: "AWS CloudWatch Log Group"
+description: "AWS CloudWatch Log Group with configurable retention and encryption"
+categories: [monitoring, logging, cloudwatch]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/cloudwatch/log_group
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
+  example: |
+    module "logs" {
+      source            = "git::https://github.com/lace-cloud/registry.git//modules/aws/cloudwatch/log_group?ref=v1.0.0"
+      name              = "/app/my-service"
+      retention_in_days = 30
+      tags = {
+        Environment = "production"
+      }
+    }

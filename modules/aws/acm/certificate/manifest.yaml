@@ -1,0 +1,30 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: acm-certificate
+version: v1.0.0
+displayName: "AWS ACM Certificate"
+description: "AWS ACM certificate with DNS or EMAIL validation"
+categories: [acm, security, networking]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/acm/certificate
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
+  example: |
+    module "certificate" {
+      source = "git::https://github.com/lace-cloud/registry.git//modules/aws/acm/certificate?ref=v1.0.0"
+
+      domain_name       = "my-app.example.com"
+      validation_method = "DNS"
+
+      tags = {
+        Environment = "production"
+      }
+    }

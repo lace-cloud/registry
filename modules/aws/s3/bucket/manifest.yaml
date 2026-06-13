@@ -1,0 +1,46 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: s3-bucket
+version: v1.0.0
+displayName: "AWS S3 Bucket"
+description: "AWS S3 bucket with versioning, KMS encryption, public access block, lifecycle rules, and optional CORS configuration"
+categories: [storage, s3]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/s3/bucket
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
+  example: |
+    module "uploads_bucket" {
+      source = "git::https://github.com/lace-cloud/registry.git//modules/aws/s3/bucket?ref=v1.0.0"
+
+      bucket             = "my-app-prod-uploads-123456789"
+      versioning_enabled = true
+
+      lifecycle_rules = [
+        {
+          id              = "expire-raw-uploads"
+          expiration_days = 90
+          noncurrent_version_expiration_days = 30
+        }
+      ]
+
+      cors_rules = [
+        {
+          allowed_methods = ["GET", "PUT", "POST"]
+          allowed_origins = ["https://my-app.example.com"]
+          expose_headers  = ["ETag"]
+        }
+      ]
+
+      tags = {
+        Environment = "production"
+      }
+    }

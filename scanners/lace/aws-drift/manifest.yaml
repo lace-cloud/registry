@@ -1,0 +1,43 @@
+apiVersion: '1'
+axis: scanner
+author: lace
+name: aws-drift
+version: v1.0.0
+displayName: "AWS Drift Detector"
+description: "Detects drift between Lace-tracked stack state and live AWS resources by comparing periodic snapshots."
+categories: [observatory, drift, aws]
+configSchema:
+  type: object
+  properties:
+    accountIds:
+      type: array
+      items: { type: string, pattern: "^[0-9]{12}$" }
+      description: "AWS account IDs to scan. If omitted, every account in the org's payer connection is scanned."
+    regions:
+      type: array
+      items: { type: string }
+      description: "AWS regions to scan. Defaults to all enabled regions."
+    intervalMinutes:
+      type: integer
+      minimum: 5
+      default: 60
+  additionalProperties: false
+runtime:
+  location: lace-managed
+  handlerId: lace/aws-drift
+authors: ["Lace Team <team@lace.cloud>"]
+outputs:
+  snapshots:
+    schemas:
+      drift_state:
+        type: object
+        properties:
+          stackId: { type: string }
+          resourceUri: { type: string }
+          resourceType: { type: string }
+          driftStatus:
+            type: string
+            enum: [in_sync, drifted, unmanaged, missing]
+          observedAttributes: { type: object, additionalProperties: true }
+          expectedAttributes: { type: object, additionalProperties: true }
+        required: [stackId, resourceUri, resourceType, driftStatus]
