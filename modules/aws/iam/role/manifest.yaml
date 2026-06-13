@@ -1,0 +1,43 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: iam-role
+version: v1.0.0
+displayName: "AWS IAM Role"
+description: "AWS IAM role with configurable assume role policy and tags"
+categories: [iam, security, identity]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/iam/role
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
+  example: |
+    module "my_role" {
+      source = "git::https://github.com/lace-cloud/registry.git//modules/aws/iam/role?ref=v1.0.0"
+
+      name = "my-application-role"
+
+      assume_role_policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+          {
+            Action = "sts:AssumeRole"
+            Effect = "Allow"
+            Principal = {
+              Service = "ec2.amazonaws.com"
+            }
+          }
+        ]
+      })
+
+      tags = {
+        Environment = "production"
+        Project     = "my-app"
+      }
+    }

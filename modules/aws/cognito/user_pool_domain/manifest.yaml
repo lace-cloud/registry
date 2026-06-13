@@ -1,0 +1,26 @@
+apiVersion: '1'
+axis: module
+author: lace
+name: cognito-user-pool-domain
+version: v1.0.0
+displayName: "AWS Cognito User Pool Domain"
+description: "AWS Cognito hosted UI domain for a user pool"
+categories: [cognito, auth, security]
+configSchema:
+  type: object
+  additionalProperties: true
+runtime:
+  location: lace-managed
+authors: ["Lace Team <team@lace.cloud>"]
+bundle:
+  system: aws
+  modulePath: modules/aws/cognito/user_pool_domain
+  gitUrl: https://github.com/lace-cloud/registry.git
+  gitTag: v1.0.0
+  example: |
+    module "user_pool_domain" {
+      source = "git::https://github.com/lace-cloud/registry.git//modules/aws/cognito/user_pool_domain?ref=v1.0.0"
+
+      domain       = "my-app-prod"
+      user_pool_id = module.user_pool.id
+    }

@@ -1,0 +1,42 @@
+apiVersion: '1'
+axis: scanner
+author: lace
+name: aws-recommendations
+version: v1.0.0
+displayName: "AWS Cost Recommendations"
+description: "Surfaces cost-savings recommendations from AWS Compute Optimizer + Cost Explorer + Trusted Advisor as findings, with estimated monthly savings."
+categories: [observatory, finops, recommendations, aws]
+configSchema:
+  type: object
+  properties:
+    sources:
+      type: array
+      items: { type: string, enum: [compute_optimizer, cost_explorer, trusted_advisor] }
+      default: [compute_optimizer, cost_explorer]
+    minMonthlySavingsUsd:
+      type: number
+      minimum: 0
+      default: 5.0
+  additionalProperties: false
+runtime:
+  location: lace-managed
+  handlerId: lace/aws-recommendations
+authors: ["Lace Team <team@lace.cloud>"]
+outputs:
+  findings:
+    schemas:
+      savings_recommendation:
+        type: object
+        properties:
+          recommendationId: { type: string }
+          cloudAccountId: { type: string }
+          resourceUri: { type: string }
+          source: { type: string, enum: [compute_optimizer, cost_explorer, trusted_advisor] }
+          kind:
+            type: string
+            description: "rightsize_ec2 | rightsize_rds | idle_resource | reserved_instance | savings_plan | …"
+          currentMonthlyCostUsd: { type: number }
+          recommendedMonthlyCostUsd: { type: number }
+          estimatedMonthlySavingsUsd: { type: number }
+          rationale: { type: string }
+        required: [recommendationId, cloudAccountId, resourceUri, source, kind, estimatedMonthlySavingsUsd]

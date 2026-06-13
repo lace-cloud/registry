@@ -1,128 +1,105 @@
 # Platform Guide
 
-Internal reference for `@lace-cloud/platform-team`. For contributor-facing docs, see [README.md](README.md).
+Internal reference for `@lace-cloud/platform-team`. For contributor-facing docs, see [README.md](README.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## CI Workflows
 
-Three workflows run in pipeline order: **Validate** → **Gate** → **Publish**.
+Two workflows: **CI** (PR gate) → **Publish** (push to `main`).
 
-### Validate (`validate.yml`)
+### CI (`ci.yml`)
 
-Runs on PRs targeting `develop`.
+Runs on PRs targeting `develop` or `main`.
 
-**Jobs:** Detect Changed Modules → Validate (matrix) → Summary
+**Jobs:** Detect Manifests → Validate (matrix) → Summary.
 
-| Job | What it does |
-|-----|-------------|
-| Detect Changed Modules | `tj-actions/changed-files` with `files: modules/**`, walks up to find `module.yaml` roots. Fails if changed files are orphaned (no parent `module.yaml`). |
-| Validate | Matrix per module. Runs in parallel (`fail-fast: false`). |
-| Summary | Rollup gate — reports pass/fail to PR. |
+| Job              | What it does                                                                                                                                                  |
+|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Detect Manifests | `tj-actions/changed-files` over `{modules,scanners,handlers,chaos-providers}/**`. Walks up to find `manifest.yaml` roots. Fails if any changed file is orphaned (no `manifest.yaml` ancestor). |
+| Validate         | Matrix per manifest dir (`fail-fast: false`). Per-axis steps below.                                                                                            |
+| Summary          | Rollup gate — reports pass/fail to PR.                                                                                                                        |
 
-**Validate checks (in order):**
+**Validate steps (in order):**
 
-1. Structure — `module.yaml` + `main.tf` exist
-2. Field validation — `id`, `name`, `system`, `version` present
-3. Module ID uniqueness — scans all `module.yaml` files in repo
-4. Version bump — compares `version` field against base branch; skipped for new modules
-5. `terraform fmt -check -recursive`
-6. `terraform init -backend=false && terraform validate`
-7. `lace module parse` (Lace CLI downloaded from `releases.lace.cloud`)
+1. **Structure check** — `manifest.yaml` exists. For modules, `main.tf` also exists.
+2. **Envelope check** — required fields (`apiVersion`, `axis`, `author`, `name`, `version`, `displayName`, `configSchema`, `runtime`) are present; `axis` matches the directory.
+3. **Identity uniqueness** — `(axis, author, name)` is unique across the repo.
+4. **Version bump** — `version` differs from base branch when `*.tf` changed (modules only) or when the manifest itself changed.
+5. **Terraform** (modules only) — `terraform fmt -check -recursive` + `terraform init -backend=false && terraform validate` + `lace terraform scan --severity HIGH` (tfsec security gate).
 
-**Concurrency:** `validate-${{ github.event.pull_request.number }}`, cancels in-progress.
+The deep zod validation runs server-side at publish time. CI is a fail-fast envelope check.
 
-**Permissions:** `contents: read`
-
-### Gate (`gate.yml`)
-
-Runs on PRs targeting `main`.
-
-Single job (`Source Branch`) that checks `github.head_ref == "develop"`. Fails with error if source branch is anything else.
-
-**Required status check:** `Gate / Source Branch` — must be configured in branch protection rulesets for `main`.
-
-No concurrency group (single lightweight job).
+**Concurrency:** `ci-${{ github.event.pull_request.number }}`, cancels in-progress.
+**Permissions:** `contents: read`.
 
 ### Publish (`publish.yml`)
 
-**Triggers:**
+| Trigger             | Condition                                                                                  | Authorization                                |
+|---------------------|--------------------------------------------------------------------------------------------|----------------------------------------------|
+| Push to `main`      | `paths: [modules/**, scanners/**, handlers/**, chaos-providers/**]`                       | Already gated by branch protection.          |
+| `workflow_dispatch` | Manual, accepts `manifest_dir` input                                                       | Requires `@lace-cloud/platform-team` member. |
 
-| Trigger | Condition | Authorization |
-|---------|-----------|---------------|
-| Push to `main` | `paths: ['modules/**']` | None (already gated by branch protection) |
-| `workflow_dispatch` | Manual, accepts `module_path` input | Requires `@lace-cloud/platform-team` membership |
+**Jobs:** Authorize (conditional) → Prepare → Register (matrix) → Summary.
 
-**Jobs:** Authorize (conditional) → Prepare → Register (matrix) → Summary
-
-| Job | Details |
-|-----|---------|
-| Authorize | Runs only for `workflow_dispatch`. Generates GitHub App token (`LACE_ORG_CI_APP_ID` + `LACE_ORG_CI_PRIVATE_KEY`), checks actor's membership in `platform-team` via API. |
-| Prepare | Runs if Authorize succeeded or was skipped. For push: `git diff HEAD^ HEAD` to find changed modules. For dispatch: validates the provided `module_path` exists. |
-| Register | Matrix per module (`fail-fast: false`). Each: validate structure → `setup-terraform` → install Lace CLI → authenticate with `LACE_REGISTRY_KEY` → `lace terraform-registry register` (with optional `--organization` from `LACE_ORGANIZATION`) → verify via `lace terraform-registry get`. |
-| Summary | Reports registered modules and result. |
+| Job       | Details                                                                                                                                                                                                                                                                                                  |
+|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Authorize | Runs only for `workflow_dispatch`. Generates GitHub App token (`LACE_ORG_CI_APP_ID` + `LACE_ORG_CI_PRIVATE_KEY`), checks actor's membership in `platform-team`.                                                                                                                                          |
+| Prepare   | For push: `git diff HEAD^ HEAD` over the four axis paths to find changed manifest dirs (walk-up to `manifest.yaml`). For dispatch: validates the provided `manifest_dir` exists.                                                                                                                         |
+| Register  | Matrix per manifest dir (`fail-fast: false`). Each: install Lace CLI → `lace whoami` → resolve axis from the dir prefix → `lace registry register --axis <axis> --manifest <dir>/manifest.yaml --readme <dir>/README.md`. Auth: repo secret `LACE_REGISTRY_KEY` (the env-var name the CLI reads). |
+| Summary   | Reports registered manifests and result.                                                                                                                                                                                                                                                                  |
 
 **Concurrency:** `publish-${{ github.ref }}`, does **not** cancel in-progress (every merge must publish).
-
-**Permissions:** `contents: read`
+**Permissions:** `contents: read`.
 
 ## Branch Protection
 
 Both `main` and `develop` are protected via GitHub rulesets:
 
-| Rule | `main` | `develop` |
-|------|--------|-----------|
-| Require PR | Yes | Yes |
-| Required status checks | `Gate / Source Branch` | `Summary` |
-| CODEOWNERS review | Yes (`.github/` changes) | Yes (`.github/` changes) |
+| Rule                       | `main`    | `develop` |
+|----------------------------|-----------|-----------|
+| Require PR                 | Yes       | Yes       |
+| Required status checks     | `Summary` | `Summary` |
+| CODEOWNERS review          | Yes       | Yes       |
 
-CODEOWNERS: `/.github/ @lace-cloud/platform-team`
-
-**Team:** `platform-team` (member: thankrandomness)
-
-**Archive branch:** `archive/all-modules` — preserves all 36 original modules before cleanup.
+CODEOWNERS pins `*` and the four axis subdirs to `@lace-cloud/platform-team`. Partner namespaces (e.g. `scanners/wiz/`, `chaos-providers/gremlin/`) are added with paired CODEOWNERS entries when partnerships land.
 
 ## Secrets
 
-| Secret | Purpose | Used by |
-|--------|---------|---------|
-| `LACE_REGISTRY_KEY` | Org-scoped API key for registry publishing | `publish.yml` (Register job) |
-| `LACE_ORG_CI_APP_ID` | GitHub App ID for org API access | `publish.yml` (Authorize job) |
-| `LACE_ORG_CI_PRIVATE_KEY` | GitHub App private key | `publish.yml` (Authorize job) |
-
-## Variables
-
-| Variable | Default | Purpose | Used by |
-|----------|---------|---------|---------|
-| `LACE_ORGANIZATION` | _(unset)_ | Organization slug for private registries. When set, passes `--organization` to CLI commands. | `publish.yml` (Register job) |
+| Secret                       | Purpose                                                                                       | Used by                       |
+|------------------------------|-----------------------------------------------------------------------------------------------|-------------------------------|
+| `LACE_REGISTRY_KEY`      | Service-token API key with `REGISTRY_PUBLISH` scope. Publishes public manifests (`org_id = NULL`). | `publish.yml` (Register job)  |
+| `LACE_ORG_CI_APP_ID`         | GitHub App ID for org API access (membership lookup).                                         | `publish.yml` (Authorize job) |
+| `LACE_ORG_CI_PRIVATE_KEY`    | GitHub App private key.                                                                       | `publish.yml` (Authorize job) |
 
 ### Registry Bot
 
-- **User:** `Lace Registry Bot` (`registry-bot@lace.cloud`), org admin of `lace-cloud`
-- **API Key:** org-scoped key for `lace-cloud`, stored as repo secret `LACE_REGISTRY_KEY`
-- Publishes public modules with `--organization lace-cloud` (same as private forks — no special-casing)
+- **User:** `Lace Registry Bot` (`registry-bot@lace.cloud`).
+- **API Key:** service token with the `REGISTRY_PUBLISH` scope (publishes public manifests). Stored as repo secret `LACE_REGISTRY_KEY`.
+- Publishes public manifests via `POST /api/v1/registry/index`. The endpoint clamps `org_id = NULL` on the resulting row.
 
 ## Troubleshooting
 
 ### CI validation passes but publish fails
 
-The Register job requires `LACE_REGISTRY_KEY`. Verify it's set in repository Settings → Secrets and variables → Actions.
+The Register job requires `LACE_REGISTRY_KEY`. Verify the secret is set and the service token is active + scoped to `REGISTRY_PUBLISH`.
 
 ### Manual dispatch authorization failure
 
 The `workflow_dispatch` Authorize job checks `platform-team` membership via the GitHub API using a GitHub App token. Possible causes:
 
-- Actor is not a member of `@lace-cloud/platform-team`
-- `LACE_ORG_CI_APP_ID` or `LACE_ORG_CI_PRIVATE_KEY` secrets are missing or expired
+- Actor is not a member of `@lace-cloud/platform-team`.
+- `LACE_ORG_CI_APP_ID` or `LACE_ORG_CI_PRIVATE_KEY` secrets are missing or expired.
 
 ### Required status check not found
 
-Status check names include the workflow name prefix. If a workflow is renamed, update the branch ruleset to match (e.g., `Gate / Source Branch`, not just `Source Branch`).
+Status check names include the workflow name prefix. If a workflow is renamed, update the branch ruleset to match (e.g. `CI / Summary`, not just `Summary`).
 
 ### Path filter triggers on deletions
 
-`modules/**` matches deleted files too. Cleanup PRs that remove module directories will trigger `validate.yml`. The Detect Changed Modules job handles this — orphaned files (no parent `module.yaml`) cause a failure.
+The four axis path filters match deleted files too. Cleanup PRs that remove a manifest dir will trigger `ci.yml`. The Detect Manifests job handles this — orphaned files (no `manifest.yaml` ancestor) cause a failure.
 
 ## Gotchas
 
-- jq in GitHub Actions: don't escape backticks (`` \` `` is invalid in jq), use raw backticks
-- `lace terraform-registry register` internally runs `terraform validate` — publish workflow needs `setup-terraform`
-- CODEOWNERS file must be on the default branch (`main`) to take effect
+- `lace registry register` reads the manifest YAML from disk and POSTs as-is. The CLI does not transform the file before publish. The on-disk shape must match the per-axis zod in `apps/api/src/lib/registry/axes/`.
+- The publish endpoint is idempotent on `(axis, author, name, version) + sha256(manifest_yaml)`. Re-publishing identical content is a no-op.
+- Re-publishing different content at the same `(axis, author, name, version)` returns 409 — manifests are immutable per version. Bump `version` to ship a fix.
+- CODEOWNERS file must be on the default branch (`main`) to take effect.

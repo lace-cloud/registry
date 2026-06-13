@@ -1,0 +1,50 @@
+apiVersion: '1'
+axis: scanner
+author: lace
+name: aws-tag-governance
+version: v1.0.0
+displayName: "AWS Tag Governance"
+description: "Audits AWS resources against the org's required-tag policy (e.g. team, cost-center, env) and emits one finding per missing or invalid tag."
+categories: [observatory, governance, aws]
+configSchema:
+  type: object
+  properties:
+    requiredTags:
+      type: array
+      items:
+        type: object
+        properties:
+          key: { type: string }
+          allowedValues:
+            type: array
+            items: { type: string }
+            description: "If set, the tag value must match one of these. Omit for free-form values."
+        required: [key]
+      minItems: 1
+    severity:
+      type: string
+      enum: [info, warning, critical]
+      default: warning
+  required: [requiredTags]
+  additionalProperties: false
+runtime:
+  location: lace-managed
+  handlerId: lace/aws-tag-governance
+authors: ["Lace Team <team@lace.cloud>"]
+outputs:
+  findings:
+    schemas:
+      tag_violation:
+        type: object
+        properties:
+          cloudAccountId: { type: string }
+          resourceUri: { type: string }
+          resourceType: { type: string }
+          violationType: { type: string, enum: [missing_tag, invalid_value] }
+          tagKey: { type: string }
+          observedValue: { type: string }
+          allowedValues:
+            type: array
+            items: { type: string }
+          severity: { type: string, enum: [info, warning, critical] }
+        required: [cloudAccountId, resourceUri, resourceType, violationType, tagKey, severity]
