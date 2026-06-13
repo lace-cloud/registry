@@ -258,3 +258,25 @@ jobs:
           else
             echo "**Result:** Validation failed." >> $GITHUB_STEP_SUMMARY
           fi
+
+      - name: Assert
+        # The single required status check for the branch rulesets. The matrix
+        # `Validate` legs carry per-manifest names a ruleset can't enumerate, so
+        # this job aggregates them into one stable gate. It must FAIL the build
+        # when any upstream job failed — `if: always()` above means this job
+        # runs even then, so the assertion is the only thing standing between a
+        # red matrix and a green required check. `skipped` validate is success:
+        # a PR that changes no manifest dir legitimately has nothing to validate.
+        run: |
+          detect='${{ needs.detect-manifests.result }}'
+          validate='${{ needs.validate.result }}'
+          echo "detect-manifests=$detect  validate=$validate"
+          if [ "$detect" != "success" ]; then
+            echo "::error::detect-manifests did not succeed ($detect)"
+            exit 1
+          fi
+          if [ "$validate" != "success" ] && [ "$validate" != "skipped" ]; then
+            echo "::error::one or more Validate jobs failed ($validate)"
+            exit 1
+          fi
+          echo "Gate passed."
