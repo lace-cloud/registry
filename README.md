@@ -30,7 +30,7 @@ cloud-system tier (`modules/aws/<name>/`). Lace's defaults live under
 | File | Runs on | What it does |
 |---|---|---|
 | `check.yml` | a pull request to `develop` or `main` | `registry-check` checks every manifest the pull request changes: the envelope fields, a version bump against the base branch, and for a module a `lace module validate` verdict of `already-lace-style`. |
-| `publish.yml` | a push to `main` | `registry-publish` publishes every manifest the push changed to production, https://lace.cloud, with `LACE_TOKEN`. |
+| `publish.yml` | a push to `main` or `develop` | `registry-publish` publishes every manifest the push changed. `main` publishes to production, https://lace.cloud, with `LACE_TOKEN`; `develop` publishes to preview, https://preview.lace.cloud, with `LACE_TOKEN_PREVIEW`. |
 
 `check.yml` and `publish.yml` are the two files the publishing guide gives every
 organization; this repository runs exactly those two.
@@ -42,15 +42,22 @@ feature/* → develop → main
 ```
 
 A pull request into `develop` is checked. A `develop` → `main` pull request is
-checked again; merging it publishes to production.
+checked again. Merging into `develop` publishes to preview; merging `develop` into
+`main` publishes to production.
 
 ## Tokens
 
-One repository secret, `LACE_TOKEN`: a service token minted in the `lace`
-organization with the `registry:publish` scope, naming `lace-cloud/registry` as
-the repository and `main` as the branch it publishes from. The token publishes
-only from a run of this repository on `main`, so whoever can push to `main` can
-publish, and `main` is protected.
+Two repository secrets, each a service token minted with the `registry:publish`
+scope, naming `lace-cloud/registry` as the repository and one branch as the
+branch it publishes from:
+
+| Secret | Minted in | Branch | Publishes to |
+|---|---|---|---|
+| `LACE_TOKEN` | the production `lace` organization | `main` | https://lace.cloud |
+| `LACE_TOKEN_PREVIEW` | the preview `lace` organization | `develop` | https://preview.lace.cloud |
+
+A token publishes only from a run of this repository on its branch, so whoever
+can push to `main` or `develop` can publish to that environment.
 
 ## Manifest envelope
 

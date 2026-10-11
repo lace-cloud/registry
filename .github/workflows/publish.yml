@@ -2,7 +2,7 @@
 name: publish
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
 permissions:
   contents: read
   id-token: write
@@ -13,4 +13,5 @@ jobs:
       - uses: actions/checkout@v7
       - uses: lace-cloud/registry-publish@v1
         with:
-          token: ${{ secrets.LACE_TOKEN }}
+          token: ${{ github.ref_name == 'main' && secrets.LACE_TOKEN || secrets.LACE_TOKEN_PREVIEW }}
+          api-url: ${{ github.ref_name == 'main' && 'https://lace.cloud' || 'https://preview.lace.cloud' }}
