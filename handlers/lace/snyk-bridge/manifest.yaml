@@ -2,7 +2,7 @@ apiVersion: '1'
 axis: handler
 author: lace
 name: snyk-bridge
-version: v1.0.1
+version: v1.0.2
 displayName: Snyk SAST Bridge
 description: Reads plan-diff for Snyk-relevant resources and gates on severity threshold.
 categories:

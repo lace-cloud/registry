@@ -2,9 +2,9 @@ apiVersion: '1'
 axis: agent
 author: lace
 name: policy-author
-version: v1.0.1
+version: v1.0.2
 displayName: Policy Author
-description: Drafts approval-policy rules from your decision history. Interaction-invoked; renders at the Draft Manifestation. Read-only; never gates.
+description: Drafts approval-policy rules from your decision history when an Actor authors a Handler. Renders at the Draft Manifestation. Read-only; never gates.
 categories:
   - intelligence
   - advisory
@@ -12,11 +12,6 @@ categories:
 runtime:
   location: in-tree
   handlerId: lace/policy-author
-trigger:
-  producer: agent
-  hooks:
-    available: []
-    default: []
 emits:
   manifestation: draft
 configSchema:
