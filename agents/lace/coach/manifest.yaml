@@ -2,18 +2,24 @@ apiVersion: '1'
 axis: agent
 author: lace
 name: coach
-version: v1.0.2
+version: v1.1.0
 displayName: Coach
-description: Recommends next best platform actions from your org's posture. Interaction-invoked; renders at the Draft Manifestation. Read-only; never gates.
+description: Preview Agent for experiments. At the Preview of a Run whose input is an experiment, reads how the same fault went on this Stack and on the org's other Stacks, the assertion Verdicts those Runs recorded and the Stack's open drift, and emits one Advisory beside the experiment before its gate decides. Read-only; never gates.
 categories:
   - intelligence
   - advisory
-  - recommendations
+  - preview
 runtime:
   location: in-tree
   handlerId: lace/coach
+reads:
+  scope: org
+  kinds:
+    - phase
+    - verdict
+    - finding
 emits:
-  manifestation: draft
+  manifestation: preview
 configSchema:
   type: object
   additionalProperties: false
