@@ -1,8 +1,8 @@
 # Snyk SAST Bridge
 
 Reads the Run plan diff and queries Snyk's REST API for findings. Produces
-a `failed` verdict when any open finding meets or exceeds the configured
-severity threshold; `passed` otherwise.
+the Verdict `block` when any open finding meets or exceeds the configured
+severity threshold; `allow` otherwise.
 
 ## Configuration
 
