@@ -2,7 +2,7 @@ apiVersion: '1'
 axis: agent
 author: lace
 name: triage
-version: v1.0.1
+version: v1.0.2
 displayName: Triage
 description: Finding-triage advisory layer. When a Finding batch lands, groups the new findings against the org's resolution history. Read-only; never gates.
 categories:
@@ -12,11 +12,6 @@ categories:
 runtime:
   location: in-tree
   handlerId: lace/triage
-trigger:
-  producer: scanner
-  hooks:
-    available: []
-    default: []
 emits:
   manifestation: triage
 configSchema:

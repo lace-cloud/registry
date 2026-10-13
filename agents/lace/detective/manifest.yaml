@@ -2,9 +2,9 @@ apiVersion: '1'
 axis: agent
 author: lace
 name: detective
-version: v1.0.1
+version: v1.0.2
 displayName: Detective
-description: Cross-axis attribution. Walks labeled incident/outcome history to explain a Run, drift, or finding. Interaction-invoked; renders at the Trace Manifestation. Read-only; never gates.
+description: Cross-axis attribution. Walks labeled incident/outcome history to explain a Run, drift, or finding when an Actor investigates. Renders at the Trace Manifestation. Read-only; never gates.
 categories:
   - intelligence
   - advisory
@@ -12,11 +12,6 @@ categories:
 runtime:
   location: in-tree
   handlerId: lace/detective
-trigger:
-  producer: agent
-  hooks:
-    available: []
-    default: []
 emits:
   manifestation: trace
 configSchema:

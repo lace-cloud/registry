@@ -1,0 +1,31 @@
+apiVersion: '1'
+axis: handler
+author: lace
+name: timeline-assertions
+version: v1.0.0
+displayName: Timeline Assertions
+description: Post-apply observer. Reads the timeline over a Run's apply window and records whether it showed what the Binding asserts — an Event landing or staying away within a span, or an Observatory snapshot field reaching or staying under a value. Never changes the Run.
+categories:
+  - governance
+  - observing
+  - post-apply
+runtime:
+  location: in-tree
+  handlerId: lace/timeline-assertions
+verdictMode: sync
+timeoutSeconds: 30
+signing:
+  kind: none
+hooks:
+  available:
+    - post_apply
+  default:
+    - post_apply
+configSchema:
+  type: object
+  additionalProperties: false
+  properties:
+    assertions:
+      type: array
+      items:
+        type: object
