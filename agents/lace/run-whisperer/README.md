@@ -1,7 +1,8 @@
 # Run Whisperer
 
-Pre-apply advisory layer. Surfaces three signals about your impending
-`lace apply`:
+Preview advisory layer. Reads the plan a Preview shows — a plan you preview
+before submitting it, or a submitted Run's plan at its `post_plan` — and
+surfaces up to four signals:
 
 1. **Own-history similarity** — vector match against your org's past
    Runs whose plan-diff is structurally similar AND whose outcome went
@@ -11,26 +12,26 @@ Pre-apply advisory layer. Surfaces three signals about your impending
 3. **Module README warning** — a section heading like `## Warning`,
    `## Migration`, or `## Breaking` in a manifest README that matches
    the structural shape of your plan-diff.
+4. **Stack-timeline pressure** — the density of apply failures and handler
+   blocks on this stack's recent timeline.
 
-Confidence is the count of corroborating signals divided by 3. Below
-the umbrella confidence floor (70%) the advisory is suppressed
-entirely — no hedging UI. With v0's max=3 only an all-three (100%)
-fire renders.
+Confidence is the count of corroborating signals divided by 4. Every
+Advisory is recorded with its confidence; the Preview shows it only at or
+above the Preview floor (70%), so three signals are the fewest that show.
 
 ## Where it shows up
 
-- **CLI** — between policy resolution and the apply step in
-  `lace apply`. Skipped when below floor.
-- **Portal** — Run-detail Advisories panel (org-admin gated). Heed /
-  Dismiss / thumbs feedback closes the eval-harness loop.
+- **CLI** — `lace stack preview` lists the Preview's Advisories beside the
+  plan and the Verdicts its gates would record.
+- **Portal** — a Run's Advisories (org-admin gated). Heed / Dismiss / thumbs
+  feedback ranks the next Preview.
 
 ## Configuration
 
-None — Whisperer has no per-install knobs in v0. Disable by
-uninstalling; scope by binding to specific stacks via the org admin
-surface.
+None — Whisperer has no per-install knobs. Turn it off by disabling or
+removing its Binding; scope it by binding to specific stacks via the org
+admin surface.
 
 ## Enforcement
 
-Advisory only — structurally. The install zod rejects
-`enforcement='mandatory'` with a 422; this surface never gates a Run.
+Advisory only — structurally. An Agent never gates a Run.

@@ -2,9 +2,9 @@ apiVersion: '1'
 axis: agent
 author: lace
 name: run-whisperer
-version: v1.0.1
+version: v1.0.2
 displayName: Run Whisperer
-description: Pre-apply advisory layer. Surfaces similar past Runs, stack-level patterns, and module README warnings. Read-only; never gates a Run.
+description: Preview advisory layer. Surfaces similar past Runs, stack-level patterns, and module README warnings for a plan before it applies. Read-only; never gates a Run.
 categories:
   - intelligence
   - advisory
@@ -12,13 +12,6 @@ categories:
 runtime:
   location: in-tree
   handlerId: lace/run-whisperer
-trigger:
-  producer: run
-  hooks:
-    available:
-      - post_plan
-    default:
-      - post_plan
 emits:
   manifestation: preview
 configSchema:
