@@ -1,7 +1,7 @@
 # Datadog Run Notifier
 
 Posts a Datadog event with the Run summary after each Run completes.
-Always returns `advisory` — never gates Run progression.
+Always records the Verdict `allow`, with a message saying what it posted (or why it skipped) — never gates Run progression.
 
 ## Configuration
 
