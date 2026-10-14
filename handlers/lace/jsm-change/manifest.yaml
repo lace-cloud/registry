@@ -2,7 +2,7 @@ apiVersion: '1'
 axis: handler
 author: lace
 name: jsm-change
-version: v1.0.2
+version: v1.0.3
 displayName: Jira Service Management Change
 description: Keeps each change request in its scope as a Jira Service Management service-desk request, opened with the change request and closed with it. Bound gating, the request's approval decides the change request's requirement; bound observing, the request follows the change request and holds no Run. The JSM adapter runs in-tree.
 categories:
