@@ -2,9 +2,9 @@ apiVersion: "1"
 axis: scanner
 author: lace
 name: gcp-cost
-version: v1.0.1
+version: v1.0.2
 displayName: GCP Cost Scanner
-description: Daily/monthly cost across linked GCP projects from the BigQuery billing export. Emits cost.daily time series and cost.monthly_trend snapshots; surfaces cost-overage findings on threshold breach.
+description: Daily/monthly cost across linked GCP projects from the BigQuery billing export. Emits cost.daily time series and cost.monthly_trend snapshots.
 categories:
   - cost
   - gcp
@@ -17,11 +17,6 @@ configSchema:
   properties: {}
   additionalProperties: true
 outputs:
-  findings:
-    schemas:
-      cost-overage:
-        type: object
-        additionalProperties: true
   snapshots:
     schemas:
       cost.monthly_trend:
