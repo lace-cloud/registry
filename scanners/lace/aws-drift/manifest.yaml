@@ -2,7 +2,7 @@ apiVersion: "1"
 axis: scanner
 author: lace
 name: aws-drift
-version: v1.0.2
+version: v1.0.3
 displayName: AWS Drift Detection
 description: Per-stack Terraform drift detection. Surfaces drift events as findings + drift summary snapshots.
 categories:
@@ -24,8 +24,10 @@ outputs:
           stackId:
             type: string
           diff:
-            type: object
-            additionalProperties: true
+            type: array
+            items:
+              type: object
+              additionalProperties: true
           lastAppliedRunId:
             type:
               - string
