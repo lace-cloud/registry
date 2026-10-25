@@ -3,6 +3,11 @@ name: publish
 on:
   push:
     branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      path:
+        description: The manifest directory to publish
+        required: true
 permissions:
   contents: read
   id-token: write
@@ -15,3 +20,4 @@ jobs:
         with:
           token: ${{ github.ref_name == 'main' && secrets.LACE_TOKEN || secrets.LACE_TOKEN_PREVIEW }}
           api-url: ${{ github.ref_name == 'main' && 'https://lace.cloud' || 'https://preview.lace.cloud' }}
+          path: ${{ inputs.path }}
