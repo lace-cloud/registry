@@ -29,7 +29,7 @@ cloud-system tier (`modules/aws/<name>/`). Lace's defaults live under
 
 | File | Runs on | What it does |
 |---|---|---|
-| `check.yml` | a pull request to `develop` or `main` | `registry-check` checks every manifest the pull request changes: the envelope fields, a version bump against the base branch, and for a module a `lace module validate` verdict of `already-lace-style`. |
+| `check.yml` | a pull request to `develop` or `main` | `registry-check` checks every manifest the pull request changes against the Lace a merge would publish to (preview, https://preview.lace.cloud, for `develop`; production, https://lace.cloud, for `main`): the envelope fields, a version bump against the base branch, and for a module a `lace module validate` verdict of `already-lace-style`. |
 | `publish.yml` | a push to `main` or `develop` | `registry-publish` publishes every manifest the push changed. `main` publishes to production, https://lace.cloud, with `LACE_TOKEN`; `develop` publishes to preview, https://preview.lace.cloud, with `LACE_TOKEN_PREVIEW`. |
 
 `check.yml` and `publish.yml` are the two files the publishing guide gives every
