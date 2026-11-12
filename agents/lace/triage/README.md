@@ -1,7 +1,7 @@
-# Triage
+# Finding Sorter
 
-When a Finding batch lands, Triage groups the new findings against your
-org's resolution history and surfaces the grouping as an Advisory. It
+When a Findings batch lands, Finding Sorter sorts the new findings against
+your org's resolution history and surfaces the result as an Advisory. It
 renders at the Triage Manifestation (the findings-review surface).
 
-Read-only; never gates. Fires once per Finding batch (not per finding).
+Read-only; never gates. Fires once per Findings batch (not per finding).
