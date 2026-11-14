@@ -22,7 +22,8 @@ the Run is cancelled.
 - `externalSystemId` — the JSM external system the request is raised on. Its
   config names `projectKey`, the service desk's project, and `requestTypeId`,
   the request type every request is raised as; the system's settings list the
-  service desk's request types.
+  service desk's request types. A system with no request type chosen cannot be
+  named here.
 - `externalTemplate` — the text the request's description opens with.
 - `fieldOverrides` — values for the request type's own fields. The summary and
   description are Lace's.
