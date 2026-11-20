@@ -3,9 +3,10 @@
 A Lace team's AWS IAM role, in an account an org admin connected to Lace.
 
 Lace runs this module as the team's role Stack. A team admin creates the role
-from **New connection › AWS**. Lace plans the Stack on Lace's Runner and, once
-any approval passes, applies it with the role the account's Lace stack created.
-The team's connection then uses `role_arn`. **Change permissions** on the
+from **New connection › AWS**. A Runner plans the Stack and, once any approval
+passes, applies it with the role an org admin created in the account with
+**Connect an AWS account**, by applying the Terraform Lace generates for it. The
+team's connection then uses `role_arn`. **Change permissions** on the
 connection page starts a new Run on the same Stack, and **Destroy the role**,
 after disconnecting, starts a destroy Run.
 
@@ -91,7 +92,7 @@ Lace offers only the presets inside the account's ceiling. Whatever
 `policy_arns` grant, the boundary holds the role inside it.
 
 The variables whose description starts "Derived by Lace" are set by Lace from
-the organization, the team and the account's Lace stack. Lace refuses a Stack
+the organization, the team and the connected account. Lace refuses a Stack
 that sets one:
 
 | Variable | What Lace sets |
@@ -100,7 +101,7 @@ that sets one:
 | `oidc_provider_arn` | The account's IAM OIDC provider for the organization's issuer. |
 | `issuer_host` | The organization's issuer, without its scheme. |
 | `oidc_audiences` | The audiences a Lace token for the role carries. |
-| `boundary_arn` | The permissions boundary the account's Lace stack created. |
+| `boundary_arn` | The permissions boundary created when an org admin connected the account. |
 | `observatory_actions` | The read-only actions Lace's scanners call at the chosen tier. |
 | `chaos_actions` | The calls Lace's tag faults make. |
 | `chaos_fis_actions` | What `lace-chaos-fis` grants when `chaos` is `fis`, grouped by the resources AWS authorizes them on: `experiment`, `unscoped` and `service_linked_role`. |

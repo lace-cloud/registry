@@ -1,10 +1,10 @@
 {
-  "treeHash": "c8b3d31544b32ead3d8a2d6495b5da9be96dcfe8dd32fcc5b46080d2a6ce7994",
+  "treeHash": "8c23551972a43e92a179072721b808f3f22916cd176a970749f036f1f903e220",
   "entries": [
     {
       "rel": "README.md",
-      "size": 6464,
-      "sha256": "2e17f6d1eeb93d059d9082289f28cd2750a78f5a1ad3e123e4c829881aeae7bd"
+      "size": 6547,
+      "sha256": "906d919e8a004162da4971a2ccb2cc1ac735479091b15829938d9b2895532e38"
     },
     {
       "rel": "main.tf",
@@ -43,8 +43,8 @@
     },
     {
       "rel": "variables.tf",
-      "size": 3297,
-      "sha256": "539949901de269a67d92beb6941fb89f7bd57e6b6c36c6b343268b15aa54ea00"
+      "size": 3312,
+      "sha256": "b828bd18a4c8378c15e031078be1f8f44adb28625459d7a73912e21f42ed6048"
     },
     {
       "rel": "versions.tf",

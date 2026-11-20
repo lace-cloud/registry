@@ -1,11 +1,11 @@
 {
   "schemaVersion": "4",
-  "treeHash": "c8b3d31544b32ead3d8a2d6495b5da9be96dcfe8dd32fcc5b46080d2a6ce7994",
+  "treeHash": "8c23551972a43e92a179072721b808f3f22916cd176a970749f036f1f903e220",
   "verdict": "already-lace-style",
   "certifierVersion": "v2.55.0",
   "bundle": {
-    "length": 7705,
-    "sha256": "5c6c9f240de33b8c930b44acb36aa99d2e427d1ec0c612c9969ae8664f3c1832"
+    "length": 7720,
+    "sha256": "b4a9740067ed8529443dbca49bbd90d916fab3b98cef05f94576f55a3c2f7db5"
   },
   "modules": [],
   "reasons": [],

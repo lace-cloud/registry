@@ -1,5 +1,5 @@
 variable "boundary_arn" {
-  description = "Derived by Lace. The permissions boundary the account's Lace stack created. Both roles carry it, so no policy grants past the account's ceiling."
+  description = "Derived by Lace. The permissions boundary created when an org admin connected the account. Both roles carry it, so no policy grants past the account's ceiling."
   type        = string
 }
 variable "chaos" {
