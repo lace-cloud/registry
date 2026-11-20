@@ -3,13 +3,25 @@ variable "boundary_arn" {
   type        = string
 }
 variable "chaos" {
-  description = "Create a second role, <name>-chaos, that holds only chaos_actions, so a chaos experiment acts under its own identity rather than the team's role."
-  type        = bool
-  default     = false
+  description = "Whether the role has a chaos role, <name>-chaos, and what it runs: none; tags, Lace's tag faults; or fis, tag faults and AWS FIS experiments. A chaos experiment acts under the chaos role, never the team's role."
+  type        = string
+  default     = "none"
+  validation {
+    condition     = contains(["none", "tags", "fis"], var.chaos)
+    error_message = "chaos must be none, tags or fis."
+  }
 }
 variable "chaos_actions" {
-  description = "Derived by Lace. The actions Lace's chaos experiments call, and the chaos role's whole grant."
+  description = "Derived by Lace. The calls Lace's tag faults make, which the chaos role's lace-chaos-actuation policy grants on *."
   type        = list(string)
+}
+variable "chaos_fis_actions" {
+  description = "Derived by Lace. What the chaos role's lace-chaos-fis policy grants when chaos is fis: experiment, the AWS FIS calls on the account's experiment templates and experiments; unscoped, the calls AWS authorizes only on *; service_linked_role, the call AWS asks of the caller of an account's first experiment, to create AWSServiceRoleForFIS."
+  type = object({
+    experiment          = list(string)
+    unscoped            = list(string)
+    service_linked_role = list(string)
+  })
 }
 variable "issuer_host" {
   description = "Derived by Lace. The organization's Lace OIDC issuer without its scheme, which prefixes the trust's aud and sub condition keys."

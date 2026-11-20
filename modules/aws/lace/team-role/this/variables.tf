@@ -2,10 +2,17 @@ variable "boundary_arn" {
   type = string
 }
 variable "chaos" {
-  type = bool
+  type = string
 }
 variable "chaos_actions" {
   type = list(string)
+}
+variable "chaos_fis_actions" {
+  type = object({
+    experiment          = list(string)
+    unscoped            = list(string)
+    service_linked_role = list(string)
+  })
 }
 variable "issuer_host" {
   type = string
