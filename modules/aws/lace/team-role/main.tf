@@ -3,6 +3,7 @@ module "this" {
   boundary_arn        = var.boundary_arn
   chaos               = var.chaos
   chaos_actions       = var.chaos_actions
+  chaos_fis_actions   = var.chaos_fis_actions
   issuer_host         = var.issuer_host
   name                = var.name
   observatory         = var.observatory
