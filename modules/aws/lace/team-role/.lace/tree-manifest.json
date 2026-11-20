@@ -1,40 +1,40 @@
 {
-  "treeHash": "29c4bb57b516ea4223bf95fbe3afeecd5eb1ddce066a4e45ca6fb848140c94a8",
+  "treeHash": "c8b3d31544b32ead3d8a2d6495b5da9be96dcfe8dd32fcc5b46080d2a6ce7994",
   "entries": [
     {
       "rel": "README.md",
-      "size": 3175,
-      "sha256": "6153fa0c3d45aea9d3eb95ad22ca9b648fc8ce100d20acdcdcdca2bf6d42f273"
+      "size": 6464,
+      "sha256": "2e17f6d1eeb93d059d9082289f28cd2750a78f5a1ad3e123e4c829881aeae7bd"
     },
     {
       "rel": "main.tf",
-      "size": 529,
-      "sha256": "b0cb4647ecade53ae52b86c8db661edd397c55b14e594724c4b92d9de3f88670"
+      "size": 575,
+      "sha256": "6df4da22211b8b30ec76cb1dc9b0b4daeb67fe1a7e456038a5be62fcbae15995"
     },
     {
       "rel": "manifest.yaml",
-      "size": 476,
-      "sha256": "7468889e6385739317f602286ff7082c8f52aed6a4a444d1c6997fed2fb67259"
+      "size": 522,
+      "sha256": "6862e78033b5ba59a665d4383549464723ca5a292a0d4a3a214324e04259f82d"
     },
     {
       "rel": "outputs.tf",
-      "size": 248,
-      "sha256": "4e43bd33995229e52c0e82ddc039e3b36286f0e023ff76d37a2efef0f8961403"
+      "size": 416,
+      "sha256": "fa858c980b31da38f5a33e2bb3852d5eb3efdf2d4dc4b00f6e099b04ed79d5cc"
     },
     {
       "rel": "this/main.tf",
-      "size": 1848,
-      "sha256": "b8f385b93ef3eddd360c86e95c685c80c5a2e5d26f8dc136f00743e6c4ebd5ec"
+      "size": 3014,
+      "sha256": "a117fa39ec12bef87c019ce765355a1791b9644ee255e406c7272cf2744549ae"
     },
     {
       "rel": "this/outputs.tf",
-      "size": 123,
-      "sha256": "020b1ff4a02cb4c7b48d80b2262f352d02ab0fbe23c79ae87915430cd7b8e748"
+      "size": 390,
+      "sha256": "a639a7ce84c38a49e811f4155c2145d26cf04a78112dc38a234d2bf7c28f110d"
     },
     {
       "rel": "this/variables.tf",
-      "size": 536,
-      "sha256": "a7d7a0b9c39cd29081149829f72272dc5401eee23557de7ac21fb8957f4f506e"
+      "size": 711,
+      "sha256": "0b1646a3883e329ba6b899797b5115da43528531e1163502c3a7325cafb077a3"
     },
     {
       "rel": "this/versions.tf",
@@ -43,8 +43,8 @@
     },
     {
       "rel": "variables.tf",
-      "size": 2541,
-      "sha256": "2fc85f58e25585fb8634bbf14e43600aaed13b3eac700e2099544646b5c1a68f"
+      "size": 3297,
+      "sha256": "539949901de269a67d92beb6941fb89f7bd57e6b6c36c6b343268b15aa54ea00"
     },
     {
       "rel": "versions.tf",
