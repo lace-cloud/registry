@@ -2,15 +2,13 @@ apiVersion: "1"
 axis: scanner
 author: lace
 name: aws-drift
-version: v1.1.0
+version: v1.0.3
 displayName: AWS Drift Detection
 description: Per-stack Terraform drift detection. Surfaces drift events as findings + drift summary snapshots.
 categories:
   - drift
   - aws
 provider: aws
-defaultIntervalSeconds: 900
-defaultSweepIntervalSeconds: 86400
 runtime:
   location: in-tree
 configSchema:
