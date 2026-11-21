@@ -2,9 +2,9 @@ apiVersion: "1"
 axis: scanner
 author: lace
 name: aws-health
-version: v1.0.1
+version: v1.0.2
 displayName: AWS Health
-description: CloudWatch alarms + AWS Health events. Emits health.alarms snapshots + alarm-breach findings.
+description: CloudWatch alarms in breach, as alarm-breach findings.
 categories:
   - health
   - aws
