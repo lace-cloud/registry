@@ -1,14 +1,12 @@
 apiVersion: "1"
 axis: scanner
 author: lace
-name: gcp-drift
+name: drift
 version: v1.0.0
-displayName: GCP Drift Detection
-description: Per-stack Terraform drift detection. Surfaces drift events as findings + drift summary snapshots.
+displayName: Drift Detection
+description: Per-Stack Terraform drift detection for a Stack on any cloud. Surfaces drift events as findings + drift summary snapshots.
 categories:
   - drift
-  - gcp
-provider: gcp
 runtime:
   location: in-tree
 configSchema:
@@ -48,7 +46,7 @@ outputs:
           properties:
             address:
               type: string
-            id:
+            arn:
               type: string
             dependencies:
               type: array
