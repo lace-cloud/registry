@@ -1,16 +1,14 @@
 apiVersion: "1"
 axis: scanner
 author: lace
-name: aws-commitments
-version: v1.0.1
-displayName: AWS Commitments Utilization
-description: Savings Plans + Reserved Instance utilization snapshot. Emits commitments.utilization snapshots.
+name: commitments
+version: v1.0.0
+displayName: Commitments Utilization
+description: How much of its committed spend the account that holds the organization's billing uses, and the commitments that would cut its on-demand spend, read through its billing anchor; on AWS, Savings Plans and Reserved Instances from Cost Explorer. Emits commitments.utilization snapshots and commitment-recommendation findings. Requires a billing anchor.
 categories:
   - cost
   - commitments
-  - aws
   - finops
-provider: aws
 runtime:
   location: in-tree
 configSchema:

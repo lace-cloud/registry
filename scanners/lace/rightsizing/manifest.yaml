@@ -1,16 +1,14 @@
 apiVersion: "1"
 axis: scanner
 author: lace
-name: aws-recommendations
-version: v1.0.1
-displayName: AWS Compute Optimizer Recommendations
-description: Right-sizing + migration recommendations from AWS Compute Optimizer. Emits rightsize-recommendation findings.
+name: rightsizing
+version: v1.0.0
+displayName: Rightsizing Recommendations
+description: Rightsizing recommendations for the resources of the account that holds the organization's billing, read through its billing anchor; on AWS, Compute Optimizer's. Emits rightsize-recommendation findings. Requires a billing anchor.
 categories:
   - cost
   - optimization
-  - aws
   - finops
-provider: aws
 runtime:
   location: in-tree
 configSchema:
