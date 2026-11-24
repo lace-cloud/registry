@@ -1,4 +1,4 @@
-# AWS Team Role
+# Team Role (system aws)
 
 A Lace team's AWS IAM role, in an account an org admin connected to Lace.
 

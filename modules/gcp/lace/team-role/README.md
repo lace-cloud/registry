@@ -1,4 +1,4 @@
-# GCP Team Role
+# Team Role (system gcp)
 
 A Lace team's Google Cloud service accounts, in a project an org admin
 connected to Lace.
