@@ -2,7 +2,7 @@ apiVersion: "1"
 axis: scanner
 author: lace
 name: drift
-version: v1.0.0
+version: v1.0.1
 displayName: Drift Detection
 description: Per-Stack Terraform drift detection for a Stack on any cloud. Surfaces drift events as findings + drift summary snapshots.
 categories:
