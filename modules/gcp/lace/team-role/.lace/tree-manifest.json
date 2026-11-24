@@ -1,0 +1,55 @@
+{
+  "treeHash": "ba24c38076e7eb4d082a7305a5f1243e4b18a916106a15df89d01c06a34bd272",
+  "entries": [
+    {
+      "rel": "README.md",
+      "size": 4003,
+      "sha256": "1ef076896e7fbefc33329ad3d6b8b88379fb8d72dc7a1d04a2d9754190cc51de"
+    },
+    {
+      "rel": "main.tf",
+      "size": 329,
+      "sha256": "08b210e2bf63857731066175781e09df7a024f121311a94514e43dc83fa6de15"
+    },
+    {
+      "rel": "manifest.yaml",
+      "size": 483,
+      "sha256": "5a5a71c0602d8fadcfaa8a98a4abc0adb3ce4fb1bcc285b9052e59e269d7b84f"
+    },
+    {
+      "rel": "outputs.tf",
+      "size": 336,
+      "sha256": "0ddf95d47650fc5f8c95cc1f3fe9127deb03c250237849fb3e926b54ff87bb1e"
+    },
+    {
+      "rel": "this/main.tf",
+      "size": 1309,
+      "sha256": "3d925fc2a3f242fc2f799e10402732e3ada47ae1f1a5dc789c3b6a2147dfef0b"
+    },
+    {
+      "rel": "this/outputs.tf",
+      "size": 150,
+      "sha256": "6701ef9c2c3c930da71e2a6ed10ca4b09ca510792af8cb341ec680d3044bf6b7"
+    },
+    {
+      "rel": "this/variables.tf",
+      "size": 356,
+      "sha256": "ed6562e3ccb4a7549fb95cafc98ef627a92201e2e90d15541d098c9b0d083ae1"
+    },
+    {
+      "rel": "this/versions.tf",
+      "size": 122,
+      "sha256": "3e16199b7efef35216e72074ce807b504e7beb91e5e6eafb031b5303b4c64ccc"
+    },
+    {
+      "rel": "variables.tf",
+      "size": 1882,
+      "sha256": "ad846d4af55c3c09a1e3f62e4ad45b612f654373d9781ef6cb9d1f9705a8a85b"
+    },
+    {
+      "rel": "versions.tf",
+      "size": 152,
+      "sha256": "02c8ae957c22f13c996acc4e9e9622f8a165df5eff8639606f93a331cfea15e7"
+    }
+  ]
+}
