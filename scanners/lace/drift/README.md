@@ -7,8 +7,9 @@ compares every resource the Stack manages, whichever provider manages it.
 
 New organizations receive `lace/drift` as a Foundation default. If your
 organization was set up before this Scanner became a default, an org admin
-can open **Registry → Scanners** in the portal, search for `lace/drift`, and
-select **Install** if it is missing. Earlier scans from the retired
+can open **Registry → Scanners** in the portal, search for `drift`, and open
+**Drift Detection** (`lace/drift`). Select **Install** if it is missing. Earlier
+scans from the retired
 `lace/aws-drift` and `lace/gcp-drift` Scanners remain available in
 **Observatory → Scanners**.
 
