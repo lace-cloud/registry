@@ -1,8 +1,8 @@
 # Cost Scanner
 
 Reads the organization's daily cost on every cloud it holds billing on, and
-records it as one series in FOCUS terms. One Scanner serves every cloud: each
-row names the cloud it was billed on.
+records it as one series. One Scanner serves every cloud: each row names the
+cloud it was billed on.
 
 It needs a billing anchor: an AWS account or Google Cloud project an org admin
 connected as the one that holds the organization's billing. Lace refuses the
@@ -21,8 +21,8 @@ A scan reads each billing anchor's billing data:
 
 Each scan writes:
 
-- `cost.daily`, the FOCUS rows: each day's `EffectiveCost`, `BilledCost` and
-  `ListCost`, by `SubAccountId`, `ServiceName`, `RegionId` and `Tags`;
+- `cost.daily`: each day's `EffectiveCost` and `BilledCost`, by `service` and
+  `account`;
 - `cost.attribution_by_team`, each day's `EffectiveCost` by the `team` tag (a
   cost allocation tag on AWS, a label on Google Cloud), with untagged cost
   under `(untagged)`;

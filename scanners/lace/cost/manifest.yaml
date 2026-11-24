@@ -4,7 +4,7 @@ author: lace
 name: cost
 version: v1.0.0
 displayName: Cost Scanner
-description: Daily cost on every cloud the organization holds billing on, read through each billing anchor as FOCUS rows. Emits cost.daily, cost.attribution_by_team and cost.forecast time series, and cost.monthly_trend snapshots. Requires a billing anchor.
+description: Daily cost on every cloud the organization holds billing on, read through each billing anchor. Emits cost.daily, cost.attribution_by_team and cost.forecast time series, and cost.monthly_trend snapshots. Requires a billing anchor.
 categories:
   - cost
   - finops
@@ -25,14 +25,11 @@ outputs:
       cost.daily:
         granularity: daily
         dimensions:
-          - ServiceName
-          - RegionId
-          - SubAccountId
-          - Tags
+          - service
+          - account
         metrics:
           - EffectiveCost
           - BilledCost
-          - ListCost
       cost.attribution_by_team:
         granularity: daily
         dimensions:
