@@ -26,10 +26,13 @@ Stack's connection, the cloud the scan reads through.
 
 ## Who changed it
 
-Each drifted resource names who made the latest change to it, and when: the
-newest write to the resource, since the Run that last applied the Stack, that
-this Stack's own Runs did not make. A scan holds one credential, the Stack's
-connection, so it reads the record of calls of that connection's cloud:
+Each drifted resource names who made the latest change to it that could have
+made its drift, and when: the newest write to the resource, since the Run that
+last applied the Stack was submitted, that this Stack's own Runs did not make.
+A call that writes only the resource's tags (on AWS) or labels (on GCP) is
+named only for a drift of its tags or labels. A scan holds one credential, the
+Stack's connection, so it reads the record of calls of that connection's
+cloud:
 
 - On AWS, the account's CloudTrail event history, read with the connection's
   role, which must allow `cloudtrail:LookupEvents`. Lace's Admin, Power user
