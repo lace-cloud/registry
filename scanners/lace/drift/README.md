@@ -28,21 +28,22 @@ Stack's connection, the cloud the scan reads through.
 
 Each drifted resource names who made the latest change to it, and when: the
 newest write to the resource, since the Run that last applied the Stack was
-submitted, that this Stack's own Runs did not make. A scan holds one
-credential, the Stack's connection, so it reads the record of calls of that
-connection's cloud:
+submitted, that this Stack's own Runs did not make. A change the cloud made
+itself names the service that made it. A scan holds one credential, the
+Stack's connection, so it reads the record of calls of that connection's
+cloud:
 
 - On AWS, the account's CloudTrail event history, read with the connection's
   role, which must allow `cloudtrail:LookupEvents`. Lace's Admin, Power user
   and Read-only presets allow it. A write made through assumed roles is
   followed back to the session it came from. A Stack that connects through its
   account's anchor names no one: the anchor can't read CloudTrail.
-- On GCP, the project's Admin Activity audit log, read as the connection's
-  execution service account, with an access token whose only scope is reading
-  logs. The Terraform Lace generates for a GCP connection grants that account
-  `roles/logging.viewer` on the project; a connection made without it names no
-  one and says Lace may not read the project's audit logs. Admin Activity logs
-  are always on, whatever the project's logging settings.
+- On GCP, the project's Admin Activity and System Event audit logs, read as
+  the connection's execution service account, with an access token whose only
+  scope is reading logs. The Terraform Lace generates for a GCP connection
+  grants that account `roles/logging.viewer` on the project; a connection made
+  without it names no one and says Lace may not read the project's audit logs.
+  Both logs are always written, whatever the project's logging settings.
 
 A drifted resource that lives outside the cloud of the Stack's connection,
 such as a `google_storage_bucket` in a Stack that connects to AWS, names no
