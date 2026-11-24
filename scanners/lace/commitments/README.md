@@ -12,7 +12,9 @@ A scan reads each billing anchor's commitments:
 
 - On AWS, from Cost Explorer, through the billing account's anchor, under the
   Observatory policy its Terraform puts on the anchor's role at the advanced
-  tier.
+  tier. Cost Explorer answers a management account of an AWS organization for
+  the whole organization. At the basic tier its reads are refused, so every
+  scan fails.
 - On Google Cloud, Lace reads no commitments, so a scan writes nothing there.
 
 On AWS, each scan writes:
@@ -24,10 +26,17 @@ On AWS, each scan writes:
   Explorer reports. With no Savings Plan in the window, the snapshot holds
   none.
 - a `commitment-recommendation` finding for a Compute Savings Plan, and one
-  for each EC2 Reserved Instance purchase, that Cost Explorer estimates would
+  for Cost Explorer's EC2 Reserved Instance recommendation, which sums every
+  instance purchase it lists, when Cost Explorer estimates the purchase would
   save money: each priced for a one-year term with no upfront payment, sized
   on the last 30 days of use, and carrying its estimated monthly savings in
-  its currency. A recommendation that saves 1,000 or more of its currency a
-  month is `medium`, and any smaller `info`.
+  its currency, which its title names. A recommendation that saves 1,000 or
+  more of its currency a month is `medium`, and any smaller `info`.
 
-Each finding's URI names its cloud: `commitment-recommendation://<provider>/…`.
+A failed read of the utilization fails the scan; a window Cost Explorer holds
+no data for is not a failure. A failed read of a recommendation raises nothing
+for it.
+
+Each finding's URI names its cloud and the recommendation, the same at every
+scan: `commitment-recommendation://<provider>/…`, so a scan that reads the
+same recommendation again raises no second finding.
