@@ -1,10 +1,10 @@
 {
-  "treeHash": "ba24c38076e7eb4d082a7305a5f1243e4b18a916106a15df89d01c06a34bd272",
+  "treeHash": "dda5b015f21a08ed5966468ef663f09137ba4722d95fb6abd1fa2a16861b8ac7",
   "entries": [
     {
       "rel": "README.md",
-      "size": 4003,
-      "sha256": "1ef076896e7fbefc33329ad3d6b8b88379fb8d72dc7a1d04a2d9754190cc51de"
+      "size": 4012,
+      "sha256": "32f8a7c564649f2f05f5299f94958dd5f2f6820d3fc748130c2661949c36c6d1"
     },
     {
       "rel": "main.tf",
@@ -13,8 +13,8 @@
     },
     {
       "rel": "manifest.yaml",
-      "size": 483,
-      "sha256": "5a5a71c0602d8fadcfaa8a98a4abc0adb3ce4fb1bcc285b9052e59e269d7b84f"
+      "size": 475,
+      "sha256": "7e2737ef8e4b7c50c0aeb92d1197ac9f1be32829d061f7e3d3023a23b41af4c6"
     },
     {
       "rel": "outputs.tf",

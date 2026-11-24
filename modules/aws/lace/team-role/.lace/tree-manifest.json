@@ -1,10 +1,10 @@
 {
-  "treeHash": "77661cacb75ff82ea676e98989a9da0c548cf86d120fd7419bdeec86774767f4",
+  "treeHash": "22c010b63101bd2987295f573017fe5701e4ec6d2e8ea83c0e140d3e1590b138",
   "entries": [
     {
       "rel": "README.md",
-      "size": 6280,
-      "sha256": "1fe82f23d0a07ef0f76732f6d84d4cfa95adf71111c8aab3ad1c8870f840bca1"
+      "size": 6289,
+      "sha256": "bf0dba3c455c9dd7f42138511200aeb250c14d8bcf5e10a91b24e328aeeff0ea"
     },
     {
       "rel": "main.tf",
@@ -13,8 +13,8 @@
     },
     {
       "rel": "manifest.yaml",
-      "size": 490,
-      "sha256": "c1db153e9ec0ee7bcbeb6502d60a590875788ab568d9427231c8c87bf14fe2e3"
+      "size": 482,
+      "sha256": "3d22f3ca44f9b87ece3388d7cbdb2631c906377d7b9c3497eb1723201cb4b42e"
     },
     {
       "rel": "outputs.tf",
