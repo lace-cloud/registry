@@ -1,15 +1,13 @@
 apiVersion: "1"
 axis: scanner
 author: lace
-name: aws-cost
-version: v1.0.1
-displayName: AWS Cost Scanner
-description: Daily/monthly cost across linked AWS accounts. Emits cost.daily time series, cost.attribution_by_team time series, and cost.monthly_trend snapshots.
+name: cost
+version: v1.0.0
+displayName: Cost Scanner
+description: Daily cost on every cloud the organization holds billing on, read through each billing anchor as FOCUS rows. Emits cost.daily, cost.attribution_by_team and cost.forecast time series, and cost.monthly_trend snapshots. Requires a billing anchor.
 categories:
   - cost
-  - aws
   - finops
-provider: aws
 runtime:
   location: in-tree
 configSchema:
@@ -17,11 +15,6 @@ configSchema:
   properties: {}
   additionalProperties: true
 outputs:
-  findings:
-    schemas:
-      cost-overage:
-        type: object
-        additionalProperties: true
   snapshots:
     schemas:
       cost.monthly_trend:
@@ -32,11 +25,14 @@ outputs:
       cost.daily:
         granularity: daily
         dimensions:
-          - service
-          - account
+          - ServiceName
+          - RegionId
+          - SubAccountId
+          - Tags
         metrics:
           - EffectiveCost
           - BilledCost
+          - ListCost
       cost.attribution_by_team:
         granularity: daily
         dimensions:
