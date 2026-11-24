@@ -5,13 +5,11 @@ apply, and reports every resource that differs as a drift finding. One Scanner
 serves Stacks on every cloud: a scan plans the Stack's whole Terraform, so it
 compares every resource the Stack manages, whichever provider manages it.
 
-New organizations receive `lace/drift` as a Foundation default. If your
-organization was set up before this Scanner became a default, an org admin
-can open **Registry → Scanners** in the portal, search for `drift`, and open
-**Drift Detection** (`lace/drift`). Select **Install** if it is missing. Earlier
-scans from the retired
-`lace/aws-drift` and `lace/gcp-drift` Scanners remain available in
-**Observatory → Scanners**.
+Foundation installs `lace/drift` during organization setup. If the Scanner is
+missing, an org admin can open **Registry → Scanners** in the portal, search
+for `drift`, open **Drift Detection** (`lace/drift`), and select **Install**.
+Earlier scans from the retired `lace/aws-drift` and `lace/gcp-drift` Scanners
+remain available in **Observatory → Scanners**.
 
 Installing `lace/drift` enrolls every live Stack, including AWS and GCP
 Stacks, with its own Binding. Each Stack is scanned on its Binding's cadence,
