@@ -1,5 +1,5 @@
 {
-  "treeHash": "dda5b015f21a08ed5966468ef663f09137ba4722d95fb6abd1fa2a16861b8ac7",
+  "treeHash": "cf0ccfcd750292529319f3c1c509d5dd2fd32772b7e1b2b0be14a9012b7d561f",
   "entries": [
     {
       "rel": "README.md",
@@ -43,8 +43,8 @@
     },
     {
       "rel": "variables.tf",
-      "size": 1882,
-      "sha256": "ad846d4af55c3c09a1e3f62e4ad45b612f654373d9781ef6cb9d1f9705a8a85b"
+      "size": 1916,
+      "sha256": "dfd8663dbaa17a303d67023e34ba8c4f4c3b018bc1b6825f3f5a413125d802b5"
     },
     {
       "rel": "versions.tf",

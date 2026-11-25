@@ -1,12 +1,12 @@
 
-2.0bundle./team-role@0.0.1"§
-./team-role@0.0.1é
-./team-role0.0.1"ˆ
+2.0bundle./team-role@0.0.1"∆
+./team-role@0.0.1∞
+./team-role0.0.1"ò
 ›
 executor_memberstring"øDerived by Lace. The principal set of the team's executor identity in the organization's workload identity pool: the one member granted Workload Identity User on the executor service account.
-Ó
-namestring"MThe executor service account's ID in the project. The planner is <name>-plan.2å
-6can(regex("^[a-z][a-z0-9-]{4,23}[a-z0-9]$", var.name))Rname must be 6 to 25 lowercase letters, digits or hyphens, starting with a letter.
+ê
+namestring"MThe executor service account's ID in the project. The planner is <name>-plan.2Æ
+6can(regex("^[a-z][a-z0-9-]{4,23}[a-z0-9]$", var.name))tname must be 6 to 25 lowercase letters, digits or hyphens, starting with a letter and ending with a letter or digit.
 ë
 observer_roleslist(string)"oDerived by Lace. The project roles Lace's own reads of the project need, which the executor holds beside roles.
 O

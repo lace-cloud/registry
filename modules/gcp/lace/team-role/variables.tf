@@ -7,7 +7,7 @@ variable "name" {
   type        = string
   validation {
     condition     = can(regex("^[a-z][a-z0-9-]{4,23}[a-z0-9]$", var.name))
-    error_message = "name must be 6 to 25 lowercase letters, digits or hyphens, starting with a letter."
+    error_message = "name must be 6 to 25 lowercase letters, digits or hyphens, starting with a letter and ending with a letter or digit."
   }
 }
 variable "observer_roles" {
