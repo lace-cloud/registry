@@ -7,6 +7,8 @@ permissions:
   contents: read
 jobs:
   check:
+    # Keep the check name in sync with the protected branch rulesets.
+    name: Summary
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
