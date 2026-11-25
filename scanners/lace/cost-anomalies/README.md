@@ -1,7 +1,7 @@
 # Cost Anomalies
 
-Finds spend that departed from its own trailing baseline, on every cloud, and
-raises a `cost-anomaly` finding for each run of anomalous days. Lace computes
+Finds US-dollar spend that departed from its own trailing baseline, on every
+cloud, and raises a `cost-anomaly` finding for each run of anomalous days. Lace computes
 it itself, over the `cost.daily` rows `lace/cost` writes: one series of
 `EffectiveCost` per cloud, account, service and currency. No cloud's own
 anomaly service is read.
