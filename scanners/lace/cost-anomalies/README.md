@@ -12,21 +12,24 @@ with billing turned on, as `lace/cost` does, and reads only what
 
 ## The rule
 
-- A day is anomalous when its cost exceeds the mean of the 14 days before it
-  by more than three of those days' standard deviations, and by at least 10
-  units of its currency.
-- A series with fewer than 14 days of history raises nothing.
-- Consecutive anomalous days are one window, and one finding.
+- A day is anomalous when its cost exceeds the mean of the 10 days before it
+  by more than three of those days' standard deviations.
+- A series with fewer than 10 days of history raises nothing.
+- Consecutive anomalous days are one window. A window raises a finding only
+  when its impact is at least 40% of its expected spend and at least 100 US
+  dollars.
+- Only a series billed in US dollars is judged.
 
 ## The finding
 
 Each `cost-anomaly` finding names its series' cloud, account and service, and
-is in the series' currency:
+is in US dollars:
 
 - `expected` is the baseline mean times the window's days, `actual` the
   window's sum, `impact` their difference, and `deviationPct` their ratio;
 - `attribution` names the service, region and account the cost came from;
-- its severity is set by its impact.
+- its severity is set by its impact: critical from 1,000 US dollars, high
+  from 250, medium below.
 
 Its URI is `cost-anomaly://<provider>/<account>/<service>/<window start>`, so a
 second scan over the same window raises no second finding.
