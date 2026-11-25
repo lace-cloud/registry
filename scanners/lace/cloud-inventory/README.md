@@ -5,10 +5,11 @@ the `resources` inventory, with a `resources.summary` snapshot of how many
 there are in all, of each type and in each region. One Scanner serves every
 cloud: each row names the cloud its resource lives on.
 
-It needs a billing anchor, as `lace/cost` does: Lace refuses the install while
+It needs the cloud account that holds the organization's billing, connected
+with billing turned on, as `lace/cost` does: Lace refuses the install while
 the organization has none on any cloud.
 
-A scan reads each billing anchor's resources:
+A scan reads the resources of each such account:
 
 - On AWS, the billing account's resources that are tagged or were once
   tagged, from the Resource Groups Tagging API

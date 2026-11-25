@@ -5,10 +5,11 @@ raises an `alarm-breach` finding for each alarm in breach, with a
 `health.alarms` snapshot of every alarm it read. One Scanner serves every
 cloud: each finding and snapshot names the cloud its alarms live on.
 
-It needs a billing anchor, as `lace/cost` does: Lace refuses the install while
+It needs the cloud account that holds the organization's billing, connected
+with billing turned on, as `lace/cost` does: Lace refuses the install while
 the organization has none on any cloud.
 
-A scan reads each billing anchor's alarms:
+A scan reads the alarms of each such account:
 
 - On AWS, the billing account's CloudWatch metric alarms, through its anchor,
   under the Observatory policy its Terraform puts on the anchor's role at the

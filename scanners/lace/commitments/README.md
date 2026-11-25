@@ -5,10 +5,11 @@ organization's billing uses, and which commitments would cut its on-demand
 spend. One Scanner serves every cloud: each snapshot and finding names the
 cloud it was read on.
 
-It needs a billing anchor, as `lace/cost` does: Lace refuses the install while
+It needs the cloud account that holds the organization's billing, connected
+with billing turned on, as `lace/cost` does: Lace refuses the install while
 the organization has none on any cloud.
 
-A scan reads each billing anchor's commitments:
+A scan reads the commitments of each such account:
 
 - On AWS, from Cost Explorer, through the billing account's anchor, under the
   Observatory policy its Terraform puts on the anchor's role at the advanced

@@ -6,7 +6,8 @@ it itself, over the `cost.daily` rows `lace/cost` writes: one series of
 `EffectiveCost` per cloud, account, service and currency. No cloud's own
 anomaly service is read.
 
-It needs a billing anchor, as `lace/cost` does, and reads only what
+It needs the cloud account that holds the organization's billing, connected
+with billing turned on, as `lace/cost` does, and reads only what
 `lace/cost` has written, so without it it raises nothing.
 
 ## The rule

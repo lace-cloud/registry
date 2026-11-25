@@ -4,7 +4,7 @@ author: lace
 name: cloud-inventory
 version: v1.0.0
 displayName: Cloud Inventory
-description: The resources of the account that holds the organization's billing, read through its billing anchor; on AWS, its tagged resources from the Resource Groups Tagging API. Emits the resources inventory and resources.summary snapshots. Requires a billing anchor.
+description: The resources of the account that holds the organization's billing, read through its anchor; on AWS, its tagged resources from the Resource Groups Tagging API. Emits the resources inventory and resources.summary snapshots. Requires the cloud account that holds the organization's billing, connected with billing turned on.
 categories:
   - inventory
 runtime:

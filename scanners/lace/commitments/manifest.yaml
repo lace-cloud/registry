@@ -4,7 +4,7 @@ author: lace
 name: commitments
 version: v1.0.0
 displayName: Commitments Utilization
-description: How much of its committed spend the account that holds the organization's billing uses, and the commitments that would cut its on-demand spend, read through its billing anchor; on AWS, Savings Plans and Reserved Instances from Cost Explorer. Emits commitments.utilization snapshots and commitment-recommendation findings. Requires a billing anchor.
+description: How much of its committed spend the account that holds the organization's billing uses, and the commitments that would cut its on-demand spend, read through its anchor; on AWS, Savings Plans and Reserved Instances from Cost Explorer. Emits commitments.utilization snapshots and commitment-recommendation findings. Requires the cloud account that holds the organization's billing, connected with billing turned on.
 categories:
   - cost
   - commitments

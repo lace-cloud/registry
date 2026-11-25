@@ -4,7 +4,7 @@ author: lace
 name: health
 version: v1.0.0
 displayName: Health
-description: Alarms in breach in the account that holds the organization's billing, read through its billing anchor; on AWS, CloudWatch metric alarms. Emits alarm-breach findings and health.alarms snapshots. Requires a billing anchor.
+description: Alarms in breach in the account that holds the organization's billing, read through its anchor; on AWS, CloudWatch metric alarms. Emits alarm-breach findings and health.alarms snapshots. Requires the cloud account that holds the organization's billing, connected with billing turned on.
 categories:
   - health
 runtime:

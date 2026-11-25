@@ -4,12 +4,12 @@ Reads the organization's daily cost on every cloud it holds billing on, and
 records it as one series. One Scanner serves every cloud: each row names the
 cloud it was billed on.
 
-It needs a billing anchor: an AWS account or Google Cloud project an org admin
-connected as the one that holds the organization's billing. Lace refuses the
-install while the organization has none on any cloud, and a scan is skipped
-while it has none.
+It needs the cloud account that holds the organization's billing: an AWS
+account or Google Cloud project an org admin connected with billing turned on.
+Lace refuses the install while the organization has none on any cloud, and a
+scan is skipped while it has none.
 
-A scan reads each billing anchor's billing data:
+A scan reads the billing data of each such account:
 
 - On AWS, Cost Explorer, through the billing account's anchor, under the
   Observatory policy its Terraform puts on the anchor's role.

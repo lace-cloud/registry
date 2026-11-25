@@ -21,7 +21,7 @@ tag is missing or its code is unregistered, it belongs to the team whose
 connection reaches the resource's account.
 
 It reads the resources other Scanners record, with their tags, so with no
-inventory it raises nothing. It needs no billing anchor.
+inventory it raises nothing. It needs no billing account.
 
 ## Configuration
 

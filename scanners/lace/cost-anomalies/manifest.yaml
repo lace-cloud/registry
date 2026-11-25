@@ -4,7 +4,7 @@ author: lace
 name: cost-anomalies
 version: v1.0.0
 displayName: Cost Anomalies
-description: Spend that departed from its own trailing baseline, on every cloud, computed by Lace over the cost.daily series lace/cost writes. Emits cost-anomaly findings. Requires a billing anchor.
+description: Spend that departed from its own trailing baseline, on every cloud, computed by Lace over the cost.daily series lace/cost writes. Emits cost-anomaly findings. Requires the cloud account that holds the organization's billing, connected with billing turned on.
 categories:
   - cost
   - anomalies

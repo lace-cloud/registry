@@ -5,10 +5,11 @@ organization's billing, and raises a `rightsize-recommendation` finding for
 each resource a recommendation names. One Scanner serves every cloud: each
 finding names the cloud its resource lives on.
 
-It needs a billing anchor, as `lace/cost` does: Lace refuses the install while
+It needs the cloud account that holds the organization's billing, connected
+with billing turned on, as `lace/cost` does: Lace refuses the install while
 the organization has none on any cloud.
 
-A scan reads each billing anchor's recommendations:
+A scan reads the recommendations of each such account:
 
 - On AWS, Compute Optimizer's, through the billing account's anchor, under the
   Observatory policy its Terraform puts on the anchor's role at the advanced
