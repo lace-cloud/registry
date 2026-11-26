@@ -1,14 +1,12 @@
 apiVersion: "1"
 axis: scanner
 author: lace
-name: aws-cloud-inventory
-version: v1.0.1
-displayName: AWS Cloud Inventory
-description: Per-region resource enumeration across services. Emits resources inventory + resources.summary snapshots.
+name: cloud-inventory
+version: v1.0.0
+displayName: Cloud Inventory
+description: The resources of the account that holds the organization's billing, read through its anchor; on AWS, its tagged resources from the Resource Groups Tagging API. Emits the resources inventory and resources.summary snapshots. Requires the cloud account that holds the organization's billing, connected with billing turned on.
 categories:
   - inventory
-  - aws
-provider: aws
 runtime:
   location: in-tree
 configSchema:

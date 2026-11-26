@@ -31,19 +31,6 @@ variable "name" {
   description = "The name of the team's role in IAM. The chaos role is <name>-chaos."
   type        = string
 }
-variable "observatory" {
-  description = "The Observatory tier the role serves: none, basic or advanced. Any tier but none puts an inline policy granting observatory_actions on the role."
-  type        = string
-  default     = "none"
-  validation {
-    condition     = contains(["none", "basic", "advanced"], var.observatory)
-    error_message = "observatory must be none, basic or advanced."
-  }
-}
-variable "observatory_actions" {
-  description = "Derived by Lace. The read-only actions Lace's scanners call at the observatory tier."
-  type        = list(string)
-}
 variable "oidc_audiences" {
   description = "Derived by Lace. The audiences a Lace token for this role carries."
   type        = list(string)

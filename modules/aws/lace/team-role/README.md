@@ -1,14 +1,14 @@
-# AWS Team Role
+# Team Role (system aws)
 
 A Lace team's AWS IAM role, in an account an org admin connected to Lace.
 
 Lace runs this module as the team's role Stack. A team admin creates the role
 from **New connection › AWS**. A Runner plans the Stack and, once any approval
 passes, applies it with the role an org admin created in the account with
-**Connect an AWS account**, by applying the Terraform Lace generates for it. The
-team's connection then uses `role_arn`. **Change permissions** on the
-connection page starts a new Run on the same Stack, and **Destroy the role**,
-after disconnecting, starts a destroy Run.
+**Connect a cloud account › AWS account**, by applying the Terraform Lace
+generates for it. The team's connection then uses `role_arn`. **Change
+permissions** on the connection page starts a new Run on the same Stack, and
+**Destroy the role**, after disconnecting, starts a destroy Run.
 
 ## What it creates
 
@@ -22,8 +22,6 @@ after disconnecting, starts a destroy Run.
   - `<issuer_host>:sub` must match `org:<org_id>:team:<team_id>:*`, so only
     this team's Lace tokens can assume it.
 - **One policy attachment for each ARN in `policy_arns`.**
-- **An inline policy `lace-observatory`**, granting `observatory_actions`, when
-  `observatory` is `basic` or `advanced`.
 - **A chaos role** when `chaos` is `tags` or `fis`, named `<name>-chaos`, with
   the same path, boundary and trust. Its inline policy `lace-chaos-actuation`
   grants `chaos_actions` on `*`, the calls Lace's tag faults make. With `fis` it
@@ -78,14 +76,13 @@ Read-only ceiling, Lace offers neither `tags` nor `fis`.
 
 ## Inputs
 
-You set these five when you create the role or change its permissions:
+You set these four when you create the role or change its permissions:
 
 | Variable | Type | Default | What it does |
 |---|---|---|---|
 | `name` | string | | The role's name in IAM. |
 | `policy_preset` | string | | The permission preset you picked. Lace resolves it to `policy_arns`; with `custom`, `policy_arns` are your own. |
 | `policy_arns` | list(string) | `[]` | The IAM policy ARNs attached to the role. |
-| `observatory` | string | `"none"` | `none`, `basic` or `advanced`. |
 | `chaos` | string | `"none"` | `none`, `tags` or `fis`. |
 
 Lace offers only the presets inside the account's ceiling. Whatever
@@ -102,7 +99,6 @@ that sets one:
 | `issuer_host` | The organization's issuer, without its scheme. |
 | `oidc_audiences` | The audiences a Lace token for the role carries. |
 | `boundary_arn` | The permissions boundary created when an org admin connected the account. |
-| `observatory_actions` | The read-only actions Lace's scanners call at the chosen tier. |
 | `chaos_actions` | The calls Lace's tag faults make. |
 | `chaos_fis_actions` | What `lace-chaos-fis` grants when `chaos` is `fis`, grouped by the resources AWS authorizes them on: `experiment`, `unscoped` and `service_linked_role`. |
 

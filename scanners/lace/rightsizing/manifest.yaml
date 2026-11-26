@@ -1,0 +1,24 @@
+apiVersion: "1"
+axis: scanner
+author: lace
+name: rightsizing
+version: v1.0.0
+displayName: Rightsizing Recommendations
+description: Rightsizing recommendations for the resources of the account that holds the organization's billing, read through its anchor; on AWS, Compute Optimizer's. Emits rightsize-recommendation findings. Requires the cloud account that holds the organization's billing, connected with billing turned on.
+categories:
+  - cost
+  - optimization
+  - finops
+runtime:
+  location: in-tree
+configSchema:
+  type: object
+  properties: {}
+  additionalProperties: true
+outputs:
+  findings:
+    schemas:
+      rightsize-recommendation:
+        type: object
+        additionalProperties: true
+authors: []

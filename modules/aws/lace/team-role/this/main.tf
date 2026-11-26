@@ -32,22 +32,6 @@ resource "aws_iam_role_policy_attachment" "this" {
   policy_arn = each.value
   role       = aws_iam_role.this.name
 }
-resource "aws_iam_role_policy" "observatory" {
-  count = var.observatory != "none" ? 1 : 0
-  name  = "lace-observatory"
-  role  = aws_iam_role.this.name
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid      = "ObservatoryRead"
-        Effect   = "Allow"
-        Action   = var.observatory_actions
-        Resource = "*"
-      },
-    ]
-  })
-}
 resource "aws_iam_role" "chaos" {
   count                = var.chaos != "none" ? 1 : 0
   assume_role_policy   = local.assume_role_policy
