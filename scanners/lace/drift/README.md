@@ -6,7 +6,7 @@ serves Stacks on every cloud: a scan plans the Stack's whole Terraform, so it
 compares every resource the Stack manages, whichever provider manages it.
 
 Every organization installs it when it is set up. Each Stack it scans is bound
-to it by its own Binding: every live Stack, AWS or GCP. A Stack is scanned on
+to it by its own Binding: every live Stack, on every cloud. A Stack is scanned on
 its Binding's cadence, every four hours by default, after each apply, and when
 someone asks for a scan.
 
@@ -27,21 +27,26 @@ Stack's connection, the cloud the scan reads through.
 ## Who changed it
 
 Each drifted resource names who made the latest change to it, and when: the
-newest write to the resource, since the Run that last applied the Stack, that
-this Stack's own Runs did not make. A scan holds one credential, the Stack's
-connection, so it reads the record of calls of that connection's cloud:
+newest write to the resource, since the Run that last applied the Stack was
+submitted, that this Stack's own Runs did not make. A change the cloud made
+itself is named by what the cloud's record names as making it. A scan holds one credential, the
+Stack's connection, so it reads the record of calls of that connection's
+cloud:
 
 - On AWS, the account's CloudTrail event history, read with the connection's
-  role, which must allow `cloudtrail:LookupEvents`. Lace's Admin, Power user
-  and Read-only presets allow it. A write made through assumed roles is
-  followed back to the session it came from. A Stack that connects through its
-  account's anchor names no one: the anchor can't read CloudTrail.
-- On GCP, the project's Admin Activity audit log, read as the connection's
-  execution service account, with an access token whose only scope is reading
-  logs. The Terraform Lace generates for a GCP connection grants that account
-  `roles/logging.viewer` on the project; a connection made without it names no
-  one and says Lace may not read the project's audit logs. Admin Activity logs
-  are always on, whatever the project's logging settings.
+  role, which must allow `cloudtrail:LookupEvents`. The Full access to every
+  service, Full access except AWS Organizations and Read-only access choices
+  allow it. A write made through assumed roles is followed back to the session
+  it came from.
+- On Google Cloud, the project's Admin Activity and System Event audit logs,
+  read as the service account the team's Runs apply as, with an access token
+  whose only scope is reading logs. The team's role Stack grants that account
+  `roles/logging.viewer` on the project; a role without it names no one and
+  says Lace may not read the project's audit logs. Both logs are always
+  written, whatever the project's logging settings.
+
+A Stack that connects through its account's anchor names no one: Lace reads no
+record of calls through an anchor.
 
 A drifted resource that lives outside the cloud of the Stack's connection,
 such as a `google_storage_bucket` in a Stack that connects to AWS, names no

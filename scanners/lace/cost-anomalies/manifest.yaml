@@ -1,0 +1,24 @@
+apiVersion: "1"
+axis: scanner
+author: lace
+name: cost-anomalies
+version: v1.0.0
+displayName: Cost Anomalies
+description: US-dollar spend that departed from its own trailing baseline, on every cloud, computed by Lace over the cost.daily series lace/cost writes. Emits cost-anomaly findings. Requires the cloud account that holds the organization's billing, connected with billing turned on.
+categories:
+  - cost
+  - anomalies
+  - finops
+runtime:
+  location: in-tree
+configSchema:
+  type: object
+  properties: {}
+  additionalProperties: true
+outputs:
+  findings:
+    schemas:
+      cost-anomaly:
+        type: object
+        additionalProperties: true
+authors: []

@@ -20,12 +20,6 @@ variable "issuer_host" {
 variable "name" {
   type = string
 }
-variable "observatory" {
-  type = string
-}
-variable "observatory_actions" {
-  type = list(string)
-}
 variable "oidc_audiences" {
   type = list(string)
 }

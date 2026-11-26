@@ -1,14 +1,12 @@
 apiVersion: "1"
 axis: scanner
 author: lace
-name: aws-tag-governance
-version: v1.0.1
-displayName: AWS Tag Governance
-description: Tag-policy compliance audit across linked AWS accounts. Emits tag-violation findings.
+name: tag-governance
+version: v1.0.0
+displayName: Tag Governance
+description: Tag-policy compliance on every cloud. Each resource Lace's inventory holds, its AWS tags or Google Cloud labels, is checked against the organization's tag policy. Emits tag-violation findings.
 categories:
   - governance
-  - aws
-provider: aws
 runtime:
   location: in-tree
 configSchema:

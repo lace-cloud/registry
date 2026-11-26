@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "4",
+  "treeHash": "cf0ccfcd750292529319f3c1c509d5dd2fd32772b7e1b2b0be14a9012b7d561f",
+  "verdict": "already-lace-style",
+  "certifierVersion": "v2.66.0",
+  "bundle": {
+    "length": 4135,
+    "sha256": "924fd9a0c16074733341bf30e2d0366de0d5e97954751ced29a19d0eaa0c76ef"
+  },
+  "modules": [],
+  "reasons": [],
+  "residuals": []
+}
